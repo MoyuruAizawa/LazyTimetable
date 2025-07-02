@@ -20,14 +20,20 @@ fun LazyTimetable(
   listState: LazyTimetableState = rememberLazyTimetableState(),
   columnWidth: Dp,
   heightPerMinute: Dp,
+  columnHeaderHeight: Dp,
   content: LazyTimetableScope.() -> Unit
 ) {
   val density = LocalDensity.current
   val columnWidthPx = remember(columnWidth) { density.run { columnWidth.roundToPx() } }
-  val heightPerMinutePx = remember (heightPerMinute) { density.run { heightPerMinute.roundToPx() } }
-  val scope = remember { LazyTimetableScopeImpl(columnWidthPx, heightPerMinutePx) }
+  val heightPerMinutePx = remember(heightPerMinute) { density.run { heightPerMinute.roundToPx() } }
+  val columnHeaderHeightPx = remember(columnHeaderHeight) { density.run { columnHeaderHeight.roundToPx() } }
+  val scope = remember(
+    columnWidthPx,
+    heightPerMinutePx,
+    columnHeaderHeightPx
+  ) { LazyTimetableScopeImpl(columnWidthPx, heightPerMinutePx, columnHeaderHeightPx) }
   content(scope)
-  val itemProvider = LazyTimetableItemProvider(scope, remember { LazyTimetableItemScopeImpl() })
+  val itemProvider = LazyTimetableItemProvider(scope)
   val coroutineScope = rememberCoroutineScope()
 
   LazyLayout(

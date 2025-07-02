@@ -24,7 +24,7 @@ private fun measurementPolicy(
 ): LazyLayoutMeasureScope.(Constraints) -> MeasureResult = { constraints ->
   val visibleItems = mutableListOf<VisibleItem>()
   val previousVisibleColumn = (listState.firstVisibleColumnNumber - 1).coerceAtLeast(0)
-  val scrollYOffset = listState.scrollYOffset
+  val scrollYOffset = listState.scrollYOffset + scope.columnHeaderHeightPx
   val scrollXOffset = listState.scrollXOffset
 
   for (columnNumber in previousVisibleColumn until scope.columnCount) {
@@ -56,16 +56,39 @@ private fun measurementPolicy(
         )
       )
     }
+    val columnHeader = scope.columnHeaders[columnNumber]
+    val x = columnHeader.x + scrollXOffset
+    when {
+      x + columnHeader.width < 0 -> continue
+      x > constraints.maxWidth -> break
+    }
+    visibleItems.add(
+      VisibleItem(
+        x = columnHeader.x + scrollXOffset,
+        y = columnHeader.y,
+        columnNumber = columnNumber,
+        placeable = measure(
+          columnHeader.positionInItemProvider,
+          Constraints(
+            minWidth = columnHeader.width,
+            maxWidth = columnHeader.width,
+            minHeight = columnHeader.height,
+            maxHeight = columnHeader.height,
+          )
+        ).first()
+      )
+    )
   }
 
   val visibleFirstItem = visibleItems.firstOrNull()
   val visibleLastItem = visibleItems.lastOrNull()
   listState.firstVisibleColumnNumber = visibleFirstItem?.columnNumber ?: -1
   listState.lastVisibleColumnNumber = visibleLastItem?.columnNumber ?: -1
-  listState.scrollHorizontalMin = scope.items.lastOrNull()?.let { constraints.maxWidth - it.x + it.width } ?: 0
+  listState.scrollHorizontalMin =
+    scope.columns.lastOrNull()?.firstOrNull()?.let { constraints.maxWidth - it.x + it.width } ?: 0
   var mostBottom = 0
   scope.columns.forEach { value ->
-    mostBottom = max(mostBottom, value.lastOrNull()?.let { it.y + it.height } ?: 0)
+    mostBottom = max(mostBottom, value.lastOrNull()?.let { it.y + it.height + scope.columnHeaderHeightPx } ?: 0)
   }
   listState.scrollVerticalMin = constraints.maxHeight - mostBottom
 

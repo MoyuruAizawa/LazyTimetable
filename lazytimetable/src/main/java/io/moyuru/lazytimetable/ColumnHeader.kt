@@ -1,8 +1,7 @@
 package io.moyuru.lazytimetable
 
-internal class Period(
+class ColumnHeader(
   val columnNumber: Int,
-  val positionInColumn: Int,
   val positionInItemProvider: Int,
   val width: Int,
   val height: Int,
