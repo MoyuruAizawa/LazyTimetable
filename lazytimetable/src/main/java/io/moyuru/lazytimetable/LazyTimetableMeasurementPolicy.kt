@@ -80,6 +80,24 @@ private fun measurementPolicy(
       )
     )
   }
+  scope.timeLabels.forEach { timelabels ->
+    visibleItems.add(
+      VisibleItem(
+        x = timelabels.x,
+        y = timelabels.y + scrollYOffset,
+        columnNumber = -1,
+        placeable = measure(
+          timelabels.positionInItemProvider,
+          Constraints(
+            minWidth = timelabels.width,
+            maxWidth = timelabels.width,
+            minHeight = 0,
+            maxHeight = constraints.maxHeight,
+          )
+        ).first()
+      )
+    )
+  }
 
   val visibleFirstItem = visibleItems.firstOrNull()
   val visibleLastItem = visibleItems.lastOrNull()

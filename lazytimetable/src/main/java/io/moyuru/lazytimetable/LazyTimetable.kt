@@ -26,6 +26,9 @@ fun LazyTimetable(
   columnWidth: Dp,
   heightPerMinute: Dp,
   columnHeaderHeight: Dp,
+  timeColumnWidth: Dp,
+  baseEpochSec: Long,
+  timeLabel: @Composable (Long) -> Unit,
   content: LazyTimetableScope.() -> Unit
 ) {
   val density = LocalDensity.current
@@ -36,18 +39,22 @@ fun LazyTimetable(
     columnWidth,
     heightPerMinute,
     columnHeaderHeight,
+    timeColumnWidth,
   ) {
     LazyTimetableScopeImpl(
-      density,
-      columnWidth,
-      heightPerMinute,
-      columnHeaderHeight,
-      verticalSpacing,
-      horizontalSpacing,
-      contentPadding,
+      density = density,
+      columnWidth = columnWidth,
+      heightPerMinute = heightPerMinute,
+      columnHeaderHeight = columnHeaderHeight,
+      timeColumnWidth = timeColumnWidth,
+      verticalSpacing = verticalSpacing,
+      horizontalSpacing = horizontalSpacing,
+      contentPadding = contentPadding,
+      baseEpochSec = baseEpochSec
     )
   }
   content(scope)
+  scope.timeLabel(timeLabel)
   val itemProvider = remember(
     verticalSpacing,
     horizontalSpacing,

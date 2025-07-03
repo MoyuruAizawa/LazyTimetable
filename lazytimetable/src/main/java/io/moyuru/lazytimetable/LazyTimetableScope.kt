@@ -11,6 +11,10 @@ interface LazyTimetableScope {
     header: @Composable () -> Unit,
     columnContent: LazyTimetableColumnScope.() -> Unit,
   )
+
+  fun timeLabel(
+    timeLabel: @Composable (Long) -> Unit,
+  )
 }
 
 interface LazyTimetableColumnScope {
@@ -25,14 +29,18 @@ internal class LazyTimetableScopeImpl(
   columnWidth: Dp,
   heightPerMinute: Dp,
   columnHeaderHeight: Dp,
+  timeColumnWidth: Dp,
   verticalSpacing: Dp,
   horizontalSpacing: Dp,
+  private val baseEpochSec: Long,
   internal val contentPadding: PaddingValues,
 ) : LazyTimetableScope, Density by density {
   private val _items = mutableListOf<@Composable () -> Unit>()
   internal val items: List<@Composable () -> Unit> = _items
   private val _columnHeaders = ArrayList<ColumnHeader>()
   internal val columnHeaders: List<ColumnHeader> = _columnHeaders
+  private val _timeLabels = ArrayList<TimeLabel>()
+  internal val timeLabels: List<TimeLabel> = _timeLabels
   private val _columns = ArrayList<List<Period>>()
   internal val columns: List<List<Period>> = _columns
   internal val columnCount get() = columns.size
@@ -40,6 +48,7 @@ internal class LazyTimetableScopeImpl(
   private val columnWidthPx = columnWidth.roundToPx()
   private val heightPerMinutePx = heightPerMinute.roundToPx()
   private val columnHeaderHeightPx = columnHeaderHeight.roundToPx()
+  private val timeColumnWidthPx = timeColumnWidth.roundToPx()
   private val verticalSpacingPx = verticalSpacing.roundToPx()
   private val horizontalSpacingPx = horizontalSpacing.roundToPx()
 
@@ -56,9 +65,10 @@ internal class LazyTimetableScopeImpl(
       positionInItemProvider = items.size,
       width = columnWidthPx,
       height = columnHeaderHeightPx,
-      x = (columnWidthPx * columnNumber +
+      x = timeColumnWidthPx +
+          columnWidthPx * columnNumber +
           horizontalSpacingPx * columnNumber +
-          contentPadding.calculateLeftPadding(LayoutDirection.Ltr).roundToPx()),
+          contentPadding.calculateLeftPadding(LayoutDirection.Ltr).roundToPx(),
       y = headerTop,
     )
     columnHeaderBottom = headerTop + columnHeaderHeightPx
@@ -74,13 +84,35 @@ internal class LazyTimetableScopeImpl(
         heightPerMinutePx = heightPerMinutePx,
         verticalSpacingPx = verticalSpacingPx,
         horizontalSpacingPx = horizontalSpacingPx,
+        timeColumnWidth = timeColumnWidthPx,
         contentPadding = contentPadding,
         columnNumber = columnNumber,
+        baseEpochSec = baseEpochSec,
         items = _items,
         column = column,
       )
     )
     _columns.add(column)
+  }
+
+  override fun timeLabel(timeLabel: @Composable ((Long) -> Unit)) {
+    val allPeriods = columns.flatMap { it }
+    val start = allPeriods.minBy { it.startAtSec }
+    val end = allPeriods.maxBy { it.endAtSec }
+
+//    columns.flatMap { it }
+//      .distinctBy { it.startAtSec }
+//      .forEach {
+//        _items.add { timeLabel(it.startAtSec) }
+//        _timeLabels.add(
+//          TimeLabel(
+//            _items.lastIndex,
+//            timeColumnWidthPx,
+//            contentPadding.calculateLeftPadding(LayoutDirection.Ltr).roundToPx(),
+//            it.y,
+//          )
+//        )
+//      }
   }
 }
 
@@ -91,8 +123,10 @@ internal class LazyTimetableColumnScopeImpl(
   private val heightPerMinutePx: Int,
   private val verticalSpacingPx: Int,
   private val horizontalSpacingPx: Int,
+  private val timeColumnWidth: Int,
   private val contentPadding: PaddingValues,
   private val columnNumber: Int,
+  private val baseEpochSec: Long,
   private val items: MutableList<@Composable () -> Unit>,
   private val column: MutableList<Period>,
 ) : LazyTimetableColumnScope, Density by density {
@@ -101,14 +135,19 @@ internal class LazyTimetableColumnScopeImpl(
     durationSec: Int,
     content: @Composable () -> Unit
   ) {
-    val previousBottom = column.getOrNull(column.lastIndex)?.let { it.y + it.height } ?: columnHeaderBottom
+    val previous = column.getOrNull(column.lastIndex)
+    val previousBottom = previous?.let { it.y + it.height } ?: columnHeaderBottom
+    val startAt = previous?.endAtSec ?: baseEpochSec
     val period = Period(
       columnNumber = columnNumber,
       positionInColumn = column.size,
       positionInItemProvider = items.size,
+      startAtSec = startAt,
+      endAtSec = startAt + durationSec,
       width = columnWidthPx,
       height = (durationSec / 60) * heightPerMinutePx,
-      x = columnWidthPx * columnNumber +
+      x = timeColumnWidth +
+          columnWidthPx * columnNumber +
           horizontalSpacingPx * columnNumber +
           contentPadding.calculateLeftPadding(LayoutDirection.Ltr).roundToPx(),
       y = previousBottom + verticalSpacingPx,

@@ -1,10 +1,8 @@
 package io.moyuru.lazytimetable
 
-internal class ColumnHeader(
-  val columnNumber: Int,
+internal data class TimeLabel(
   val positionInItemProvider: Int,
   val width: Int,
-  val height: Int,
   val x: Int,
   val y: Int
 )
