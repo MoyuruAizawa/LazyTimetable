@@ -2,6 +2,7 @@ package io.moyuru.lazytimetable
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.layout.LazyLayout
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -21,37 +22,47 @@ fun LazyTimetable(
   listState: LazyTimetableState = rememberLazyTimetableState(),
   verticalSpacing: Dp = 0.dp,
   horizontalSpacing: Dp = 0.dp,
+  contentPadding: PaddingValues = PaddingValues(),
   columnWidth: Dp,
   heightPerMinute: Dp,
   columnHeaderHeight: Dp,
   content: LazyTimetableScope.() -> Unit
 ) {
   val density = LocalDensity.current
-  val columnWidthPx = remember(columnWidth) { density.run { columnWidth.roundToPx() } }
-  val heightPerMinutePx = remember(heightPerMinute) { density.run { heightPerMinute.roundToPx() } }
-  val columnHeaderHeightPx = remember(columnHeaderHeight) { density.run { columnHeaderHeight.roundToPx() } }
-  val verticalSpacingPx = remember(verticalSpacing) { density.run { verticalSpacing.roundToPx() } }
-  val horizontalSpacingPx = remember(horizontalSpacing) { density.run { horizontalSpacing.roundToPx() } }
   val scope = remember(
-    columnWidthPx,
-    heightPerMinutePx,
-    columnHeaderHeightPx
+    verticalSpacing,
+    horizontalSpacing,
+    contentPadding,
+    columnWidth,
+    heightPerMinute,
+    columnHeaderHeight,
   ) {
     LazyTimetableScopeImpl(
-      columnWidthPx,
-      heightPerMinutePx,
-      columnHeaderHeightPx,
-      verticalSpacingPx,
-      horizontalSpacingPx
+      density,
+      columnWidth,
+      heightPerMinute,
+      columnHeaderHeight,
+      verticalSpacing,
+      horizontalSpacing,
+      contentPadding,
     )
   }
   content(scope)
-  val itemProvider = LazyTimetableItemProvider(scope)
+  val itemProvider = remember(
+    verticalSpacing,
+    horizontalSpacing,
+    contentPadding,
+    columnWidth,
+    heightPerMinute,
+    columnHeaderHeight,
+  ) {
+    LazyTimetableItemProvider(scope)
+  }
   val coroutineScope = rememberCoroutineScope()
 
   LazyLayout(
     itemProvider = { itemProvider },
-    measurePolicy = rememberMeasurementPolicy(listState, scope,),
+    measurePolicy = rememberMeasurementPolicy(listState, scope),
     modifier = modifier
       .pointerInput(Unit) {
         val velocityTracker = VelocityTracker()

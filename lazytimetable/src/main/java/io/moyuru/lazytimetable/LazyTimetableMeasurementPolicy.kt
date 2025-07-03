@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.LayoutDirection
 import kotlin.math.max
 
 @Composable
@@ -24,7 +25,7 @@ private fun measurementPolicy(
 ): LazyLayoutMeasureScope.(Constraints) -> MeasureResult = { constraints ->
   val visibleItems = mutableListOf<VisibleItem>()
   val previousVisibleColumn = (listState.firstVisibleColumnNumber - 1).coerceAtLeast(0)
-  val scrollYOffset = listState.scrollYOffset + scope.columnHeaderHeightPx
+  val scrollYOffset = listState.scrollYOffset
   val scrollXOffset = listState.scrollXOffset
 
   for (columnNumber in previousVisibleColumn until scope.columnCount) {
@@ -85,12 +86,18 @@ private fun measurementPolicy(
   listState.firstVisibleColumnNumber = visibleFirstItem?.columnNumber ?: -1
   listState.lastVisibleColumnNumber = visibleLastItem?.columnNumber ?: -1
   listState.scrollHorizontalMin =
-    scope.columns.lastOrNull()?.firstOrNull()?.let { constraints.maxWidth - (it.x + it.width) } ?: 0
+    scope.columns.lastOrNull()?.firstOrNull()?.let {
+      constraints.maxWidth -
+          (it.x + it.width) -
+          scope.contentPadding.calculateRightPadding(LayoutDirection.Ltr).roundToPx()
+    } ?: 0
   var mostBottom = 0
   scope.columns.forEach { value ->
-    mostBottom = max(mostBottom, value.lastOrNull()?.let { it.y + it.height + scope.columnHeaderHeightPx } ?: 0)
+    mostBottom = max(mostBottom, value.lastOrNull()?.let { it.y + it.height } ?: 0)
   }
-  listState.scrollVerticalMin = constraints.maxHeight - mostBottom
+  listState.scrollVerticalMin = constraints.maxHeight -
+      mostBottom -
+      scope.contentPadding.calculateBottomPadding().roundToPx()
 
   layout(constraints.maxWidth, constraints.maxHeight) {
     visibleItems.forEach {

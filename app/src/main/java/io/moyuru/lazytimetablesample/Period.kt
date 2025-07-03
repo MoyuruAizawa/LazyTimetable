@@ -21,7 +21,12 @@ data class Stage(
   val periods: List<Period>,
 )
 
-val stages = listOf(
+data class Event(
+  val startAt: Long,
+  val stages: List<Stage>,
+)
+
+private val stages = listOf(
   Stage(
     title = "MAINSTAGE",
     periods = listOf(
@@ -246,4 +251,9 @@ val stages = listOf(
       Period.Show("Kurt Verheyen", 18000, 14), // 19:20 - 00:00 (4.67 hours)
     )
   )
+)
+
+val tomorrowland = Event(
+  startAt = 1752836400,
+  stages = stages,
 )

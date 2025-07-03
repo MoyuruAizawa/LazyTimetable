@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,33 +26,37 @@ class MainActivity : ComponentActivity() {
     enableEdgeToEdge()
     setContent {
       LazyTimetableSampleTheme {
-        LazyTimetable(
-          columnWidth = 120.dp,
-          heightPerMinute = 1.5.dp,
-          columnHeaderHeight = 80.dp,
-          modifier = Modifier.fillMaxSize(),
-        ) {
-          stages.forEach { stage ->
-            column(
-              header = {
-                Box(
-                  contentAlignment = Alignment.Center,
-                  modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White),
-                ) {
-                  Text(
-                    text = stage.title,
-                    fontSize = 14.sp,
-                  )
+        Scaffold {
+          LazyTimetable(
+            columnWidth = 120.dp,
+            heightPerMinute = 1.5.dp,
+            columnHeaderHeight = 80.dp + it.calculateTopPadding(),
+            modifier = Modifier
+              .fillMaxSize()
+          ) {
+            tomorrowland.stages.forEach { stage ->
+              column(
+                header = {
+                  Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                      .fillMaxSize()
+                      .background(Color.White)
+                      .padding(top = it.calculateTopPadding())
+                  ) {
+                    Text(
+                      text = stage.title,
+                      fontSize = 14.sp,
+                    )
+                  }
                 }
-              }
-            ) {
-              stage.periods.forEach { period ->
-                item(period.durationSec) {
-                  when (period) {
-                    is Period.Empty -> Spacer(Modifier)
-                    is Period.Show -> Show(period.title)
+              ) {
+                stage.periods.forEach { period ->
+                  item(period.durationSec) {
+                    when (period) {
+                      is Period.Empty -> Spacer(Modifier)
+                      is Period.Show -> Show(period.title)
+                    }
                   }
                 }
               }
