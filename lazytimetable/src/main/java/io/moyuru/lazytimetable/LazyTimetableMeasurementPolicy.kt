@@ -64,7 +64,7 @@ private fun measurementPolicy(
     }
     visibleItems.add(
       VisibleItem(
-        x = columnHeader.x + scrollXOffset,
+        x = x,
         y = columnHeader.y,
         columnNumber = columnNumber,
         placeable = measure(
@@ -85,7 +85,7 @@ private fun measurementPolicy(
   listState.firstVisibleColumnNumber = visibleFirstItem?.columnNumber ?: -1
   listState.lastVisibleColumnNumber = visibleLastItem?.columnNumber ?: -1
   listState.scrollHorizontalMin =
-    scope.columns.lastOrNull()?.firstOrNull()?.let { constraints.maxWidth - it.x + it.width } ?: 0
+    scope.columns.lastOrNull()?.firstOrNull()?.let { constraints.maxWidth - (it.x + it.width) } ?: 0
   var mostBottom = 0
   scope.columns.forEach { value ->
     mostBottom = max(mostBottom, value.lastOrNull()?.let { it.y + it.height + scope.columnHeaderHeightPx } ?: 0)
