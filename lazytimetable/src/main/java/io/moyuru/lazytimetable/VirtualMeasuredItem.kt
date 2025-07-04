@@ -6,6 +6,11 @@ internal interface VirtualMeasuredItem {
   val height: Int
   val x: Int
   val y: Int
+
+  val left get() = x
+  val top get() = y
+  val right get() = x + width
+  val bottom get() = y + height
 }
 
 internal class Period(

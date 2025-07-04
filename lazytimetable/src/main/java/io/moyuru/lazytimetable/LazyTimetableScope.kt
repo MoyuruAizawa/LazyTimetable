@@ -57,29 +57,33 @@ internal class LazyTimetableScopeImpl(
   private val heightPerMinutePx = heightPerMinute.roundToPx()
   private val columnHeaderHeightPx = columnHeaderHeight.roundToPx()
   private val timeColumnWidthPx = timeColumnWidth.roundToPx()
+
   private val verticalSpacingPx = verticalSpacing.roundToPx()
   private val horizontalSpacingPx = horizontalSpacing.roundToPx()
 
-  internal var columnHeaderBottom = columnHeaderHeight.roundToPx()
+  internal val timetableViewPortTop = (contentPadding.calculateTopPadding() + columnHeaderHeight).roundToPx()
+
+  fun estimateColumnHeader(columnNumber: Int, paddingLeft: Int, paddingTop: Int): ColumnHeader {
+    return ColumnHeader(
+      positionInItemProvider = items.size,
+      width = columnWidthPx,
+      height = columnHeaderHeightPx,
+      x = paddingLeft +
+          timeColumnWidthPx +
+          columnWidthPx * columnNumber +
+          horizontalSpacingPx * columnNumber,
+      y = paddingTop,
+    )
+  }
 
   override fun column(
     header: @Composable () -> Unit,
     columnContent: LazyTimetableColumnScope.() -> Unit,
   ) {
-    val headerTop = contentPadding.calculateTopPadding().roundToPx()
+    val paddingTop = contentPadding.calculateTopPadding().roundToPx()
     val paddingLeft = contentPadding.calculateLeftPadding(LayoutDirection.Ltr).roundToPx()
     val columnNumber = columns.size
-    val columnHeader = ColumnHeader(
-      positionInItemProvider = items.size,
-      width = columnWidthPx,
-      height = columnHeaderHeightPx,
-      x = timeColumnWidthPx +
-          columnWidthPx * columnNumber +
-          horizontalSpacingPx * columnNumber +
-          paddingLeft,
-      y = headerTop,
-    )
-    columnHeaderBottom = headerTop + columnHeaderHeightPx
+    val columnHeader = estimateColumnHeader(columnNumber, paddingLeft, paddingTop)
     _items.add(header)
     _columnHeaders.add(columnHeader)
 
@@ -87,7 +91,7 @@ internal class LazyTimetableScopeImpl(
     columnContent(
       LazyTimetableColumnScopeImpl(
         density = this,
-        columnHeaderBottom = headerTop + columnHeaderHeightPx,
+        columnHeaderBottom = paddingTop + columnHeaderHeightPx,
         columnWidthPx = columnWidthPx,
         heightPerMinutePx = heightPerMinutePx,
         verticalSpacingPx = verticalSpacingPx,
@@ -119,7 +123,7 @@ internal class LazyTimetableScopeImpl(
           timeColumnWidthPx,
           60 * heightPerMinutePx,
           paddingLeft,
-          columnHeaderBottom + (it - baseEpochSec).toInt() / 60 * heightPerMinutePx
+          timetableViewPortTop + (it - baseEpochSec).toInt() / 60 * heightPerMinutePx
         )
       )
     }
