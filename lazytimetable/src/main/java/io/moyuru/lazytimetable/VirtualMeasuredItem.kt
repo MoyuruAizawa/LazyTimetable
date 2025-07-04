@@ -9,11 +9,16 @@ internal interface VirtualMeasuredItem {
   val x: Int
   val y: Int
   val content: @Composable () -> Unit
+  val contentType: ContentType
 
   val left get() = x
   val top get() = y
   val right get() = x + width
   val bottom get() = y + height
+}
+
+internal enum class ContentType {
+  Period, ColumnHeader, TimeLabel, ColumnHeaderBackground, TimeColumnBackground
 }
 
 internal class Period(
@@ -26,7 +31,9 @@ internal class Period(
   override val x: Int,
   override val y: Int,
   override val content: @Composable () -> Unit,
-) : VirtualMeasuredItem
+) : VirtualMeasuredItem {
+  override val contentType = ContentType.Period
+}
 
 internal class ColumnHeader(
   override val positionInItemProvider: Int,
@@ -35,7 +42,9 @@ internal class ColumnHeader(
   override val x: Int,
   override val y: Int,
   override val content: @Composable () -> Unit,
-) : VirtualMeasuredItem
+) : VirtualMeasuredItem {
+  override val contentType = ContentType.ColumnHeader
+}
 
 internal data class TimeLabel(
   override val positionInItemProvider: Int,
@@ -44,7 +53,9 @@ internal data class TimeLabel(
   override val x: Int,
   override val y: Int,
   override val content: @Composable () -> Unit,
-) : VirtualMeasuredItem
+) : VirtualMeasuredItem {
+  override val contentType = ContentType.TimeLabel
+}
 
 internal class ColumnHeaderBackground(
   override val positionInItemProvider: Int,
@@ -55,6 +66,7 @@ internal class ColumnHeaderBackground(
 ) : VirtualMeasuredItem {
   // MeasurementPolicy ignores this value.
   override val width: Int = Int.MAX_VALUE
+  override val contentType = ContentType.ColumnHeaderBackground
 }
 
 internal class TimeColumnBackground(
@@ -66,4 +78,5 @@ internal class TimeColumnBackground(
 ) : VirtualMeasuredItem {
   // MeasurementPolicy ignores this value.
   override val height: Int = Int.MAX_VALUE
+  override val contentType = ContentType.TimeColumnBackground
 }
