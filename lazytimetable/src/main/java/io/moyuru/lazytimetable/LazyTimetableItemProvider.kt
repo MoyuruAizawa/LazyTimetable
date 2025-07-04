@@ -13,6 +13,6 @@ internal class LazyTimetableItemProvider(
 
   @Composable
   override fun Item(index: Int, key: Any) {
-    scope.items[index]()
+    scope.items[index].content()
   }
 }

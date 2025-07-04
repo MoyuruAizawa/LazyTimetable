@@ -52,8 +52,8 @@ internal class LazyTimetableScopeImpl(
   private val baseEpochSec: Long,
   internal val contentPadding: PaddingValues,
 ) : LazyTimetableScope, Density by density {
-  private val _items = mutableListOf<@Composable () -> Unit>()
-  internal val items: List<@Composable () -> Unit> = _items
+  private val _items = mutableListOf<VirtualMeasuredItem>()
+  internal val items: List<VirtualMeasuredItem> = _items
   private val _columnHeaders = ArrayList<ColumnHeader>()
   internal val columnHeaders: List<ColumnHeader> = _columnHeaders
   private val _timeLabels = ArrayList<TimeLabel>()
@@ -76,7 +76,12 @@ internal class LazyTimetableScopeImpl(
   internal val timetableViewPortLeft = contentPadding.calculateLeftPadding(LayoutDirection.Ltr).roundToPx() +
       timeColumnWidthPx
 
-  fun estimateColumnHeader(columnNumber: Int, timetableViewPortLeft: Int, paddingTop: Int): ColumnHeader {
+  fun estimateColumnHeader(
+    columnNumber: Int,
+    timetableViewPortLeft: Int,
+    paddingTop: Int,
+    content: @Composable () -> Unit,
+  ): ColumnHeader {
     return ColumnHeader(
       positionInItemProvider = items.size,
       width = columnWidthPx,
@@ -85,10 +90,16 @@ internal class LazyTimetableScopeImpl(
           columnWidthPx * columnNumber +
           horizontalSpacingPx * columnNumber,
       y = paddingTop,
+      content = content,
     )
   }
 
-  fun estimatePeriod(columnNumber: Int, previous: Period?, durationSec: Int): Period {
+  fun estimatePeriod(
+    columnNumber: Int,
+    previous: Period?,
+    durationSec: Int,
+    content: @Composable () -> Unit,
+  ): Period {
     val previousBottom = previous?.let { it.y + it.height } ?: timetableViewPortTop
     val startAt = previous?.endAtSec ?: baseEpochSec
     return Period(
@@ -102,6 +113,7 @@ internal class LazyTimetableScopeImpl(
           columnWidthPx * columnNumber +
           horizontalSpacingPx * columnNumber,
       y = previousBottom + verticalSpacingPx,
+      content = content,
     )
   }
 
@@ -114,16 +126,22 @@ internal class LazyTimetableScopeImpl(
       columnNumber,
       timetableViewPortLeft,
       contentPadding.calculateTopPadding().roundToPx(),
+      header,
     )
-    _items.add(header)
+    _items.add(columnHeader)
     _columnHeaders.add(columnHeader)
 
     val column = mutableListOf<Period>()
     columnContent(
       LazyTimetableColumnScopeImpl { durationSec, content ->
         val previous = column.getOrNull(column.lastIndex)
-        val period = estimatePeriod(columnNumber, previous, durationSec)
-        _items.add(content)
+        val period = estimatePeriod(
+          columnNumber,
+          previous,
+          durationSec,
+          content,
+        )
+        _items.add(period)
         column.add(period)
       }
     )
@@ -139,32 +157,34 @@ internal class LazyTimetableScopeImpl(
       val next = previous + 60 * 60
       if (next < end) next else null
     }.forEach {
-      _items.add { timeLabel(it) }
-      _timeLabels.add(
-        TimeLabel(
-          _items.lastIndex,
-          timeColumnWidthPx,
-          60 * heightPerMinutePx,
-          paddingLeft,
-          timetableViewPortTop + (it - baseEpochSec).toInt() / 60 * heightPerMinutePx
-        )
+      val measuredTimeLabel = TimeLabel(
+        _items.size,
+        timeColumnWidthPx,
+        60 * heightPerMinutePx,
+        paddingLeft,
+        timetableViewPortTop + (it - baseEpochSec).toInt() / 60 * heightPerMinutePx,
+        { timeLabel(it) },
       )
+      _items.add(measuredTimeLabel)
+      _timeLabels.add(measuredTimeLabel)
     }
 
-    _items.add {
-      Spacer(
-        Modifier
-          .fillMaxSize()
-          .background(columnHeaderColor)
-      )
-    }
-    leftTopCorner = LeftTopCorner(
+    val leftTopCorner = LeftTopCorner(
       x = paddingLeft,
       y = contentPadding.calculateTopPadding().roundToPx(),
       width = timeColumnWidthPx,
       height = columnHeaderHeightPx,
-      positionInItemProvider = _items.lastIndex
+      positionInItemProvider = _items.size,
+      content = {
+        Spacer(
+          Modifier
+            .fillMaxSize()
+            .background(columnHeaderColor)
+        )
+      }
     )
+    _items.add(leftTopCorner)
+    this.leftTopCorner = leftTopCorner
   }
 }
 
