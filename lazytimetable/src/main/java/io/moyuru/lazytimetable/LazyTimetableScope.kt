@@ -62,14 +62,15 @@ internal class LazyTimetableScopeImpl(
   private val horizontalSpacingPx = horizontalSpacing.roundToPx()
 
   internal val timetableViewPortTop = (contentPadding.calculateTopPadding() + columnHeaderHeight).roundToPx()
+  internal val timetableViewPortLeft = contentPadding.calculateLeftPadding(LayoutDirection.Ltr).roundToPx() +
+      timeColumnWidthPx
 
-  fun estimateColumnHeader(columnNumber: Int, paddingLeft: Int, paddingTop: Int): ColumnHeader {
+  fun estimateColumnHeader(columnNumber: Int, timetableViewPortLeft: Int, paddingTop: Int): ColumnHeader {
     return ColumnHeader(
       positionInItemProvider = items.size,
       width = columnWidthPx,
       height = columnHeaderHeightPx,
-      x = paddingLeft +
-          timeColumnWidthPx +
+      x = timetableViewPortLeft +
           columnWidthPx * columnNumber +
           horizontalSpacingPx * columnNumber,
       y = paddingTop,
@@ -80,10 +81,12 @@ internal class LazyTimetableScopeImpl(
     header: @Composable () -> Unit,
     columnContent: LazyTimetableColumnScope.() -> Unit,
   ) {
-    val paddingTop = contentPadding.calculateTopPadding().roundToPx()
-    val paddingLeft = contentPadding.calculateLeftPadding(LayoutDirection.Ltr).roundToPx()
     val columnNumber = columns.size
-    val columnHeader = estimateColumnHeader(columnNumber, paddingLeft, paddingTop)
+    val columnHeader = estimateColumnHeader(
+      columnNumber,
+      timetableViewPortLeft,
+      contentPadding.calculateTopPadding().roundToPx(),
+    )
     _items.add(header)
     _columnHeaders.add(columnHeader)
 
@@ -91,13 +94,12 @@ internal class LazyTimetableScopeImpl(
     columnContent(
       LazyTimetableColumnScopeImpl(
         density = this,
-        columnHeaderBottom = paddingTop + columnHeaderHeightPx,
+        timetableViewPortTop = timetableViewPortTop,
+        timetableViewPortLeft = timetableViewPortLeft,
         columnWidthPx = columnWidthPx,
         heightPerMinutePx = heightPerMinutePx,
         verticalSpacingPx = verticalSpacingPx,
         horizontalSpacingPx = horizontalSpacingPx,
-        timeColumnWidth = timeColumnWidthPx,
-        contentPadding = contentPadding,
         columnNumber = columnNumber,
         baseEpochSec = baseEpochSec,
         items = _items,
@@ -147,13 +149,12 @@ internal class LazyTimetableScopeImpl(
 
 internal class LazyTimetableColumnScopeImpl(
   density: Density,
-  private val columnHeaderBottom: Int,
+  private val timetableViewPortTop: Int,
+  private val timetableViewPortLeft: Int,
   private val columnWidthPx: Int,
   private val heightPerMinutePx: Int,
   private val verticalSpacingPx: Int,
   private val horizontalSpacingPx: Int,
-  private val timeColumnWidth: Int,
-  private val contentPadding: PaddingValues,
   private val columnNumber: Int,
   private val baseEpochSec: Long,
   private val items: MutableList<@Composable () -> Unit>,
@@ -165,7 +166,7 @@ internal class LazyTimetableColumnScopeImpl(
     content: @Composable () -> Unit
   ) {
     val previous = column.getOrNull(column.lastIndex)
-    val previousBottom = previous?.let { it.y + it.height } ?: columnHeaderBottom
+    val previousBottom = previous?.let { it.y + it.height } ?: timetableViewPortTop
     val startAt = previous?.endAtSec ?: baseEpochSec
     val period = Period(
       columnNumber = columnNumber,
@@ -174,10 +175,9 @@ internal class LazyTimetableColumnScopeImpl(
       endAtSec = startAt + durationSec,
       width = columnWidthPx,
       height = (durationSec / 60) * heightPerMinutePx,
-      x = timeColumnWidth +
+      x = timetableViewPortLeft +
           columnWidthPx * columnNumber +
-          horizontalSpacingPx * columnNumber +
-          contentPadding.calculateLeftPadding(LayoutDirection.Ltr).roundToPx(),
+          horizontalSpacingPx * columnNumber,
       y = previousBottom + verticalSpacingPx,
     )
 
