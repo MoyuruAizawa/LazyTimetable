@@ -46,7 +46,6 @@ internal class LazyTimetableScopeImpl(
   heightPerMinute: Dp,
   columnHeaderHeight: Dp,
   timeColumnWidth: Dp,
-  verticalSpacing: Dp,
   horizontalSpacing: Dp,
   private val columnHeaderColor: Color,
   private val timeColumnColor: Color,
@@ -72,7 +71,6 @@ internal class LazyTimetableScopeImpl(
   private val columnHeaderHeightPx = columnHeaderHeight.roundToPx()
   private val timeColumnWidthPx = timeColumnWidth.roundToPx()
 
-  private val verticalSpacingPx = verticalSpacing.roundToPx()
   private val horizontalSpacingPx = horizontalSpacing.roundToPx()
 
   internal val timetableViewPortTop = (contentPadding.calculateTopPadding() + columnHeaderHeight).roundToPx()
@@ -115,7 +113,7 @@ internal class LazyTimetableScopeImpl(
       x = timetableViewPortLeft +
           columnWidthPx * columnNumber +
           horizontalSpacingPx * columnNumber,
-      y = previousBottom + verticalSpacingPx,
+      y = previousBottom,
       content = content,
     )
   }

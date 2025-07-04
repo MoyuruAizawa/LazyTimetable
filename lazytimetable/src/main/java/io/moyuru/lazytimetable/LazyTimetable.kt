@@ -21,7 +21,6 @@ import kotlinx.coroutines.launch
 fun LazyTimetable(
   modifier: Modifier = Modifier,
   listState: LazyTimetableState = rememberLazyTimetableState(),
-  verticalSpacing: Dp = 0.dp,
   horizontalSpacing: Dp = 0.dp,
   contentPadding: PaddingValues = PaddingValues(),
   columnWidth: Dp,
@@ -36,7 +35,6 @@ fun LazyTimetable(
 ) {
   val density = LocalDensity.current
   val scope = remember(
-    verticalSpacing,
     horizontalSpacing,
     contentPadding,
     columnWidth,
@@ -50,7 +48,6 @@ fun LazyTimetable(
       heightPerMinute = heightPerMinute,
       columnHeaderHeight = columnHeaderHeight,
       timeColumnWidth = timeColumnWidth,
-      verticalSpacing = verticalSpacing,
       horizontalSpacing = horizontalSpacing,
       contentPadding = contentPadding,
       baseEpochSec = baseEpochSec,
@@ -62,7 +59,6 @@ fun LazyTimetable(
   scope.background()
   scope.timeLabel(timeLabel)
   val itemProvider = remember(
-    verticalSpacing,
     horizontalSpacing,
     contentPadding,
     columnWidth,
