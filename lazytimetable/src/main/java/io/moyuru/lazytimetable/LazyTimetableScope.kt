@@ -88,6 +88,23 @@ internal class LazyTimetableScopeImpl(
     )
   }
 
+  fun estimatePeriod(columnNumber: Int, previous: Period?, durationSec: Int): Period {
+    val previousBottom = previous?.let { it.y + it.height } ?: timetableViewPortTop
+    val startAt = previous?.endAtSec ?: baseEpochSec
+    return Period(
+      columnNumber = columnNumber,
+      positionInItemProvider = items.size,
+      startAtSec = startAt,
+      endAtSec = startAt + durationSec,
+      width = columnWidthPx,
+      height = (durationSec / 60) * heightPerMinutePx,
+      x = timetableViewPortLeft +
+          columnWidthPx * columnNumber +
+          horizontalSpacingPx * columnNumber,
+      y = previousBottom + verticalSpacingPx,
+    )
+  }
+
   override fun column(
     header: @Composable () -> Unit,
     columnContent: LazyTimetableColumnScope.() -> Unit,
@@ -105,21 +122,7 @@ internal class LazyTimetableScopeImpl(
     columnContent(
       LazyTimetableColumnScopeImpl { durationSec, content ->
         val previous = column.getOrNull(column.lastIndex)
-        val previousBottom = previous?.let { it.y + it.height } ?: timetableViewPortTop
-        val startAt = previous?.endAtSec ?: baseEpochSec
-        val period = Period(
-          columnNumber = columnNumber,
-          positionInItemProvider = items.size,
-          startAtSec = startAt,
-          endAtSec = startAt + durationSec,
-          width = columnWidthPx,
-          height = (durationSec / 60) * heightPerMinutePx,
-          x = timetableViewPortLeft +
-              columnWidthPx * columnNumber +
-              horizontalSpacingPx * columnNumber,
-          y = previousBottom + verticalSpacingPx,
-        )
-
+        val period = estimatePeriod(columnNumber, previous, durationSec)
         _items.add(content)
         column.add(period)
       }
