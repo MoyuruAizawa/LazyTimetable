@@ -100,7 +100,7 @@ internal class LazyTimetableScopeImpl(
     durationSec: Int,
     content: @Composable () -> Unit,
   ): Period {
-    val previousBottom = previous?.let { it.y + it.height } ?: timetableViewPortTop
+    val previousBottom = previous?.bottom ?: timetableViewPortTop
     val startAt = previous?.endAtSec ?: baseEpochSec
     return Period(
       columnNumber = columnNumber,
