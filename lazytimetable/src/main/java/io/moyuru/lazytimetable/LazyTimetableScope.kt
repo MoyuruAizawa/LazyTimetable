@@ -70,7 +70,6 @@ internal class LazyTimetableScopeImpl(
     val paddingLeft = contentPadding.calculateLeftPadding(LayoutDirection.Ltr).roundToPx()
     val columnNumber = columns.size
     val columnHeader = ColumnHeader(
-      columnNumber = columnNumber,
       positionInItemProvider = items.size,
       width = columnWidthPx,
       height = columnHeaderHeightPx,
@@ -166,7 +165,6 @@ internal class LazyTimetableColumnScopeImpl(
     val startAt = previous?.endAtSec ?: baseEpochSec
     val period = Period(
       columnNumber = columnNumber,
-      positionInColumn = column.size,
       positionInItemProvider = items.size,
       startAtSec = startAt,
       endAtSec = startAt + durationSec,
