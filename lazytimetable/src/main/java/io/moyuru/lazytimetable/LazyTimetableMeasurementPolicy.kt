@@ -12,6 +12,13 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.LayoutDirection
 import kotlin.math.max
 
+private const val COLUMN_HEADER_BACKGROUND_Z = 3f
+private const val COLUMN_HEADER_Z = COLUMN_HEADER_BACKGROUND_Z + 1
+private const val TIME_COLUMN_BACKGROUND_Z = 2f
+private const val TIME_COLUMN_Z = TIME_COLUMN_BACKGROUND_Z + 1
+private const val TIMETABLE_Z = 1f
+
+
 @Composable
 internal fun rememberMeasurementPolicy(
   listState: LazyTimetableState,
@@ -44,7 +51,7 @@ private fun measurementPolicy(
         VisibleItem(
           x,
           y,
-          0f,
+          TIMETABLE_Z,
           period.columnNumber,
           measure(
             period.positionInItemProvider,
@@ -69,7 +76,7 @@ private fun measurementPolicy(
       VisibleItem(
         x = x,
         y = columnHeader.y,
-        z = 2f,
+        z = COLUMN_HEADER_Z,
         columnNumber = columnNumber,
         placeable = measure(
           columnHeader.positionInItemProvider,
@@ -93,7 +100,7 @@ private fun measurementPolicy(
       VisibleItem(
         x = timeLabel.x,
         y = y,
-        z = 1f,
+        z = TIME_COLUMN_Z,
         columnNumber = -1,
         placeable = measure(
           timeLabel.positionInItemProvider,
@@ -107,20 +114,39 @@ private fun measurementPolicy(
       )
     )
   }
-  scope.leftTopCorner?.let {
+  scope.columnHeaderBackground?.let {
     visibleItems.add(
       VisibleItem(
         it.x,
         it.y,
-        1.5f,
+        COLUMN_HEADER_BACKGROUND_Z,
+        -1,
+        measure(
+          it.positionInItemProvider,
+          Constraints(
+            minWidth = constraints.maxWidth,
+            maxWidth = constraints.maxWidth,
+            minHeight = it.height,
+            maxHeight = it.height,
+          )
+        ).first(),
+      )
+    )
+  }
+  scope.timeColumnBackground?.let {
+    visibleItems.add(
+      VisibleItem(
+        it.x,
+        it.y,
+        TIME_COLUMN_BACKGROUND_Z,
         -1,
         measure(
           it.positionInItemProvider,
           Constraints(
             minWidth = it.width,
             maxWidth = it.width,
-            minHeight = it.height,
-            maxHeight = it.height,
+            minHeight = constraints.maxHeight,
+            maxHeight = constraints.maxHeight,
           )
         ).first(),
       )

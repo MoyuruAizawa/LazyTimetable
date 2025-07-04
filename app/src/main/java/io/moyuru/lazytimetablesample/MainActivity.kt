@@ -30,22 +30,18 @@ class MainActivity : ComponentActivity() {
     enableEdgeToEdge()
     setContent {
       LazyTimetableSampleTheme {
-        Scaffold {
+        Scaffold { contentPaddings ->
           LazyTimetable(
+            contentPadding = contentPaddings,
             columnWidth = 120.dp,
             heightPerMinute = 1.5.dp,
-            columnHeaderHeight = 80.dp + it.calculateTopPadding(),
+            columnHeaderHeight = 80.dp,
             columnHeaderColor = Color.White,
             timeColumnWidth = 100.dp,
             timeColumnColor = Color.White,
             baseEpochSec = tomorrowland.startAt,
             timeLabel = {
-              Box(
-                contentAlignment = Alignment.TopCenter,
-                modifier = Modifier
-                  .fillMaxSize()
-                  .background(Color.White)
-              ) {
+              Box(contentAlignment = Alignment.TopCenter) {
                 val label = remember(it) {
                   Instant.ofEpochSecond(it)
                     .atZone(ZoneId.of("Europe/Brussels"))
@@ -60,13 +56,7 @@ class MainActivity : ComponentActivity() {
             tomorrowland.stages.forEach { stage ->
               column(
                 header = {
-                  Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                      .fillMaxSize()
-                      .background(Color.White)
-                      .padding(top = it.calculateTopPadding())
-                  ) {
+                  Box(contentAlignment = Alignment.Center) {
                     Text(
                       text = stage.title,
                       fontSize = 14.sp,

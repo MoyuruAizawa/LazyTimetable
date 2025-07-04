@@ -49,6 +49,7 @@ internal class LazyTimetableScopeImpl(
   verticalSpacing: Dp,
   horizontalSpacing: Dp,
   private val columnHeaderColor: Color,
+  private val timeColumnColor: Color,
   private val baseEpochSec: Long,
   internal val contentPadding: PaddingValues,
 ) : LazyTimetableScope, Density by density {
@@ -58,10 +59,12 @@ internal class LazyTimetableScopeImpl(
   internal val columnHeaders: List<ColumnHeader> = _columnHeaders
   private val _timeLabels = ArrayList<TimeLabel>()
   internal val timeLabels: List<TimeLabel> = _timeLabels
-  internal var leftTopCorner: LeftTopCorner? = null
-    private set
   private val _columns = ArrayList<List<Period>>()
   internal val columns: List<List<Period>> = _columns
+  internal var columnHeaderBackground: ColumnHeaderBackground? = null
+    private set
+  internal var timeColumnBackground: TimeColumnBackground? = null
+    private set
   internal val columnCount get() = columns.size
 
   private val columnWidthPx = columnWidth.roundToPx()
@@ -168,12 +171,13 @@ internal class LazyTimetableScopeImpl(
       _items.add(measuredTimeLabel)
       _timeLabels.add(measuredTimeLabel)
     }
+  }
 
-    val leftTopCorner = LeftTopCorner(
-      x = paddingLeft,
-      y = contentPadding.calculateTopPadding().roundToPx(),
-      width = timeColumnWidthPx,
-      height = columnHeaderHeightPx,
+  internal fun background() {
+    val columnHeaderBackground = ColumnHeaderBackground(
+      x = 0,
+      y = 0,
+      height = timetableViewPortTop,
       positionInItemProvider = _items.size,
       content = {
         Spacer(
@@ -183,8 +187,24 @@ internal class LazyTimetableScopeImpl(
         )
       }
     )
-    _items.add(leftTopCorner)
-    this.leftTopCorner = leftTopCorner
+    _items.add(columnHeaderBackground)
+    this.columnHeaderBackground = columnHeaderBackground
+
+    val timeColumnBackground = TimeColumnBackground(
+      x = 0,
+      y = timetableViewPortTop,
+      width = timetableViewPortLeft,
+      positionInItemProvider = _items.size,
+      content = {
+        Spacer(
+          Modifier
+            .fillMaxSize()
+            .background(timeColumnColor)
+        )
+      }
+    )
+    _items.add(timeColumnBackground)
+    this.timeColumnBackground = timeColumnBackground
   }
 }
 

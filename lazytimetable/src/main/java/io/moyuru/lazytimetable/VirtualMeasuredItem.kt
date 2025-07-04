@@ -46,11 +46,24 @@ internal data class TimeLabel(
   override val content: @Composable () -> Unit,
 ) : VirtualMeasuredItem
 
-internal class LeftTopCorner(
+internal class ColumnHeaderBackground(
   override val positionInItemProvider: Int,
-  override val width: Int,
   override val height: Int,
   override val x: Int,
   override val y: Int,
   override val content: @Composable () -> Unit,
-) : VirtualMeasuredItem
+) : VirtualMeasuredItem {
+  // MeasurementPolicy ignores this value.
+  override val width: Int = Int.MAX_VALUE
+}
+
+internal class TimeColumnBackground(
+  override val positionInItemProvider: Int,
+  override val width: Int,
+  override val x: Int,
+  override val y: Int,
+  override val content: @Composable () -> Unit,
+) : VirtualMeasuredItem {
+  // MeasurementPolicy ignores this value.
+  override val height: Int = Int.MAX_VALUE
+}
