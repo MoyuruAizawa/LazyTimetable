@@ -29,6 +29,17 @@ interface LazyTimetableColumnScope {
   )
 }
 
+class LazyTimetableColumnScopeImpl(
+  private val accumulator: (durationSec: Int, content: @Composable () -> Unit) -> Unit,
+) : LazyTimetableColumnScope {
+  override fun item(
+    durationSec: Int,
+    content: @Composable () -> Unit
+  ) {
+    accumulator(durationSec, content)
+  }
+}
+
 internal class LazyTimetableScopeImpl(
   density: Density,
   columnWidth: Dp,
@@ -92,19 +103,26 @@ internal class LazyTimetableScopeImpl(
 
     val column = mutableListOf<Period>()
     columnContent(
-      LazyTimetableColumnScopeImpl(
-        density = this,
-        timetableViewPortTop = timetableViewPortTop,
-        timetableViewPortLeft = timetableViewPortLeft,
-        columnWidthPx = columnWidthPx,
-        heightPerMinutePx = heightPerMinutePx,
-        verticalSpacingPx = verticalSpacingPx,
-        horizontalSpacingPx = horizontalSpacingPx,
-        columnNumber = columnNumber,
-        baseEpochSec = baseEpochSec,
-        items = _items,
-        column = column,
-      )
+      LazyTimetableColumnScopeImpl { durationSec, content ->
+        val previous = column.getOrNull(column.lastIndex)
+        val previousBottom = previous?.let { it.y + it.height } ?: timetableViewPortTop
+        val startAt = previous?.endAtSec ?: baseEpochSec
+        val period = Period(
+          columnNumber = columnNumber,
+          positionInItemProvider = items.size,
+          startAtSec = startAt,
+          endAtSec = startAt + durationSec,
+          width = columnWidthPx,
+          height = (durationSec / 60) * heightPerMinutePx,
+          x = timetableViewPortLeft +
+              columnWidthPx * columnNumber +
+              horizontalSpacingPx * columnNumber,
+          y = previousBottom + verticalSpacingPx,
+        )
+
+        _items.add(content)
+        column.add(period)
+      }
     )
     _columns.add(column)
   }
@@ -147,41 +165,3 @@ internal class LazyTimetableScopeImpl(
   }
 }
 
-internal class LazyTimetableColumnScopeImpl(
-  density: Density,
-  private val timetableViewPortTop: Int,
-  private val timetableViewPortLeft: Int,
-  private val columnWidthPx: Int,
-  private val heightPerMinutePx: Int,
-  private val verticalSpacingPx: Int,
-  private val horizontalSpacingPx: Int,
-  private val columnNumber: Int,
-  private val baseEpochSec: Long,
-  private val items: MutableList<@Composable () -> Unit>,
-  private val column: MutableList<Period>,
-) : LazyTimetableColumnScope, Density by density {
-
-  override fun item(
-    durationSec: Int,
-    content: @Composable () -> Unit
-  ) {
-    val previous = column.getOrNull(column.lastIndex)
-    val previousBottom = previous?.let { it.y + it.height } ?: timetableViewPortTop
-    val startAt = previous?.endAtSec ?: baseEpochSec
-    val period = Period(
-      columnNumber = columnNumber,
-      positionInItemProvider = items.size,
-      startAtSec = startAt,
-      endAtSec = startAt + durationSec,
-      width = columnWidthPx,
-      height = (durationSec / 60) * heightPerMinutePx,
-      x = timetableViewPortLeft +
-          columnWidthPx * columnNumber +
-          horizontalSpacingPx * columnNumber,
-      y = previousBottom + verticalSpacingPx,
-    )
-
-    items.add(content)
-    column.add(period)
-  }
-}
