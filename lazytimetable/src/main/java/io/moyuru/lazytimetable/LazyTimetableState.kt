@@ -25,9 +25,9 @@ class LazyTimetableState internal constructor() {
     internal set
   var scrollXOffset by mutableIntStateOf(0)
     internal set
-  var firstVisibleColumnNumber = -1
+  var firstVisibleColumnNumber by mutableIntStateOf(-1)
     internal set
-  var lastVisibleColumnNumber = -1
+  var lastVisibleColumnNumber by mutableIntStateOf(-1)
     internal set
   internal var scrollVerticalMin = 0
   internal val scrollVerticalMax = 0

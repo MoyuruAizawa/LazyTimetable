@@ -35,9 +35,9 @@ private fun measurementPolicy(
       val x = period.x + scrollXOffset
       val y = period.y + scrollYOffset
       when {
-        x + period.width < 0 -> break
+        x + period.width < scope.timetableViewPortLeft -> break
         x > constraints.maxWidth -> break
-        y + period.height < 0 -> continue
+        y + period.height < scope.timetableViewPortTop -> continue
         y > constraints.maxHeight -> break
       }
       visibleItems.add(
@@ -55,6 +55,7 @@ private fun measurementPolicy(
               maxHeight = period.height,
             )
           ).first(),
+          isPeriod = true,
         )
       )
     }
@@ -126,10 +127,11 @@ private fun measurementPolicy(
     )
   }
 
-  val visibleFirstItem = visibleItems.firstOrNull()
-  val visibleLastItem = visibleItems.lastOrNull()
-  listState.firstVisibleColumnNumber = visibleFirstItem?.columnNumber ?: -1
-  listState.lastVisibleColumnNumber = visibleLastItem?.columnNumber ?: -1
+  val periods = visibleItems.filter { it.isPeriod }
+  val visibleFirstPeriod = periods.firstOrNull()
+  val visibleLastPeriod = periods.lastOrNull()
+  listState.firstVisibleColumnNumber = visibleFirstPeriod?.columnNumber ?: -1
+  listState.lastVisibleColumnNumber = visibleLastPeriod?.columnNumber ?: -1
   listState.scrollHorizontalMin =
     scope.columns.lastOrNull()?.firstOrNull()?.let {
       constraints.maxWidth -
@@ -157,4 +159,5 @@ private class VisibleItem(
   val z: Float,
   val columnNumber: Int,
   val placeable: Placeable,
+  val isPeriod: Boolean = false,
 )
