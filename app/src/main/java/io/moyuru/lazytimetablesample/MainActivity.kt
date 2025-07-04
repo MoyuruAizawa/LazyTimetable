@@ -33,6 +33,7 @@ class MainActivity : ComponentActivity() {
         Scaffold { contentPaddings ->
           LazyTimetable(
             contentPadding = contentPaddings,
+            horizontalSpacing = 4.dp,
             columnWidth = 120.dp,
             heightPerMinute = 1.5.dp,
             columnHeaderHeight = 80.dp,
@@ -68,7 +69,7 @@ fun Show(title: String, modifier: Modifier = Modifier) {
     contentAlignment = Alignment.Center,
     modifier = modifier
       .fillMaxSize()
-      .padding(2.dp)
+      .padding(vertical = 2.dp)
       .background(Color.DarkGray)
       .padding(4.dp),
   ) {
