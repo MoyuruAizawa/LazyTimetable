@@ -21,10 +21,10 @@ fun rememberLazyTimetableState() = rememberSaveable(
 
 @Stable
 class LazyTimetableState internal constructor() {
-  var scrollYOffset by mutableIntStateOf(0)
-    internal set
-  var scrollXOffset by mutableIntStateOf(0)
-    internal set
+  internal var scrollYOffset by mutableIntStateOf(0)
+  internal var scrollXOffset by mutableIntStateOf(0)
+  val scrollY get() = -scrollYOffset
+  val scrollX get() = -scrollXOffset
   var firstVisibleColumnNumber by mutableIntStateOf(-1)
     internal set
   var lastVisibleColumnNumber by mutableIntStateOf(-1)
