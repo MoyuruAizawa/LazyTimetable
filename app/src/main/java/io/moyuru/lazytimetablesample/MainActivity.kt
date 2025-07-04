@@ -40,30 +40,11 @@ class MainActivity : ComponentActivity() {
             timeColumnWidth = 100.dp,
             timeColumnColor = Color.White,
             baseEpochSec = tomorrowland.startAt,
-            timeLabel = {
-              Box(contentAlignment = Alignment.TopCenter) {
-                val label = remember(it) {
-                  Instant.ofEpochSecond(it)
-                    .atZone(ZoneId.of("Europe/Brussels"))
-                    .format(DateTimeFormatter.ofPattern("HH:mm"))
-                }
-                Text(text = label)
-              }
-            },
-            modifier = Modifier
-              .fillMaxSize()
+            timeLabel = { TimeLabel(it) },
+            modifier = Modifier.fillMaxSize(),
           ) {
             tomorrowland.stages.forEach { stage ->
-              column(
-                header = {
-                  Box(contentAlignment = Alignment.Center) {
-                    Text(
-                      text = stage.title,
-                      fontSize = 14.sp,
-                    )
-                  }
-                }
-              ) {
+              column(header = { Header(stage) }) {
                 stage.periods.forEach { period ->
                   item(period.durationSec) {
                     when (period) {
@@ -92,5 +73,27 @@ fun Show(title: String, modifier: Modifier = Modifier) {
       .padding(4.dp),
   ) {
     Text(text = title, color = Color.White, modifier = Modifier)
+  }
+}
+
+@Composable
+fun Header(stage: Stage, modifier: Modifier = Modifier) {
+  Box(contentAlignment = Alignment.Center, modifier = modifier) {
+    Text(
+      text = stage.title,
+      fontSize = 14.sp,
+    )
+  }
+}
+
+@Composable
+fun TimeLabel(epochSec: Long, modifier: Modifier = Modifier) {
+  Box(contentAlignment = Alignment.TopCenter, modifier = modifier) {
+    val label = remember(epochSec) {
+      Instant.ofEpochSecond(epochSec)
+        .atZone(ZoneId.of("Europe/Brussels"))
+        .format(DateTimeFormatter.ofPattern("HH:mm"))
+    }
+    Text(text = label)
   }
 }
