@@ -76,7 +76,7 @@ class LazyTimetableState internal constructor() {
   }
 
   companion object {
-    val SAVER: Saver<LazyTimetableState, *> = listSaver(
+    internal val SAVER: Saver<LazyTimetableState, *> = listSaver(
       save = {
         listOf(
           it.scrollYOffset,
