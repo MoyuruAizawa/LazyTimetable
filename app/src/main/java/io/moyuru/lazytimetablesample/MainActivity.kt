@@ -8,7 +8,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -36,15 +35,21 @@ class MainActivity : ComponentActivity() {
             columnWidth = 120.dp,
             heightPerMinute = 1.5.dp,
             columnHeaderHeight = 80.dp + it.calculateTopPadding(),
+            columnHeaderColor = Color.White,
             timeColumnWidth = 100.dp,
+            timeColumnColor = Color.White,
             baseEpochSec = tomorrowland.startAt,
             timeLabel = {
               Box(
                 contentAlignment = Alignment.TopCenter,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                  .fillMaxSize()
+                  .background(Color.White)
               ) {
                 val label = remember(it) {
-                  Instant.ofEpochSecond(it).atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("HH:mm"))
+                  Instant.ofEpochSecond(it)
+                    .atZone(ZoneId.of("Europe/Brussels"))
+                    .format(DateTimeFormatter.ofPattern("HH:mm"))
                 }
                 Text(text = label)
               }

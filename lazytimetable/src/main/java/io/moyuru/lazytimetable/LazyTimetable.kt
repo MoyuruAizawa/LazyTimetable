@@ -8,6 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.platform.LocalDensity
@@ -26,7 +30,9 @@ fun LazyTimetable(
   columnWidth: Dp,
   heightPerMinute: Dp,
   columnHeaderHeight: Dp,
+  columnHeaderColor: Color,
   timeColumnWidth: Dp,
+  timeColumnColor: Color,
   baseEpochSec: Long,
   timeLabel: @Composable (Long) -> Unit,
   content: LazyTimetableScope.() -> Unit
@@ -50,7 +56,8 @@ fun LazyTimetable(
       verticalSpacing = verticalSpacing,
       horizontalSpacing = horizontalSpacing,
       contentPadding = contentPadding,
-      baseEpochSec = baseEpochSec
+      baseEpochSec = baseEpochSec,
+      columnHeaderColor = columnHeaderColor,
     )
   }
   content(scope)
@@ -71,6 +78,19 @@ fun LazyTimetable(
     itemProvider = { itemProvider },
     measurePolicy = rememberMeasurementPolicy(listState, scope),
     modifier = modifier
+      .drawWithContent {
+        drawRect(
+          color = columnHeaderColor,
+          topLeft = Offset(0f, 0f),
+          size = Size(size.width, (contentPadding.calculateTopPadding() + columnHeaderHeight).toPx())
+        )
+        drawRect(
+          color = timeColumnColor,
+          topLeft = Offset(0f, 0f),
+          size = Size(timeColumnWidth.toPx(), size.height)
+        )
+        drawContent()
+      }
       .pointerInput(Unit) {
         val velocityTracker = VelocityTracker()
         detectDragGestures(

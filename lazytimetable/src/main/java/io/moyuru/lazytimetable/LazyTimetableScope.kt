@@ -1,7 +1,12 @@
 package io.moyuru.lazytimetable
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
@@ -32,6 +37,7 @@ internal class LazyTimetableScopeImpl(
   timeColumnWidth: Dp,
   verticalSpacing: Dp,
   horizontalSpacing: Dp,
+  private val columnHeaderColor: Color,
   private val baseEpochSec: Long,
   internal val contentPadding: PaddingValues,
 ) : LazyTimetableScope, Density by density {
@@ -41,6 +47,8 @@ internal class LazyTimetableScopeImpl(
   internal val columnHeaders: List<ColumnHeader> = _columnHeaders
   private val _timeLabels = ArrayList<TimeLabel>()
   internal val timeLabels: List<TimeLabel> = _timeLabels
+  internal var leftTopCorner: LeftTopCorner? = null
+    private set
   private val _columns = ArrayList<List<Period>>()
   internal val columns: List<List<Period>> = _columns
   internal val columnCount get() = columns.size
@@ -59,6 +67,7 @@ internal class LazyTimetableScopeImpl(
     columnContent: LazyTimetableColumnScope.() -> Unit,
   ) {
     val headerTop = contentPadding.calculateTopPadding().roundToPx()
+    val paddingLeft = contentPadding.calculateLeftPadding(LayoutDirection.Ltr).roundToPx()
     val columnNumber = columns.size
     val columnHeader = ColumnHeader(
       columnNumber = columnNumber,
@@ -68,7 +77,7 @@ internal class LazyTimetableScopeImpl(
       x = timeColumnWidthPx +
           columnWidthPx * columnNumber +
           horizontalSpacingPx * columnNumber +
-          contentPadding.calculateLeftPadding(LayoutDirection.Ltr).roundToPx(),
+          paddingLeft,
       y = headerTop,
     )
     columnHeaderBottom = headerTop + columnHeaderHeightPx
@@ -97,22 +106,39 @@ internal class LazyTimetableScopeImpl(
 
   override fun timeLabel(timeLabel: @Composable ((Long) -> Unit)) {
     val allPeriods = columns.flatMap { it }
-    val start = allPeriods.minBy { it.startAtSec }
-    val end = allPeriods.maxBy { it.endAtSec }
+    val start = allPeriods.minBy { it.startAtSec }.startAtSec
+    val end = allPeriods.maxBy { it.endAtSec }.endAtSec
+    val paddingLeft = contentPadding.calculateLeftPadding(LayoutDirection.Ltr).roundToPx()
+    generateSequence(start) { previous ->
+      val next = previous + 60 * 60
+      if (next < end) next else null
+    }.forEach {
+      _items.add { timeLabel(it) }
+      _timeLabels.add(
+        TimeLabel(
+          _items.lastIndex,
+          timeColumnWidthPx,
+          60 * heightPerMinutePx,
+          paddingLeft,
+          columnHeaderBottom + (it - baseEpochSec).toInt() / 60 * heightPerMinutePx
+        )
+      )
+    }
 
-//    columns.flatMap { it }
-//      .distinctBy { it.startAtSec }
-//      .forEach {
-//        _items.add { timeLabel(it.startAtSec) }
-//        _timeLabels.add(
-//          TimeLabel(
-//            _items.lastIndex,
-//            timeColumnWidthPx,
-//            contentPadding.calculateLeftPadding(LayoutDirection.Ltr).roundToPx(),
-//            it.y,
-//          )
-//        )
-//      }
+    _items.add {
+      Spacer(
+        Modifier
+          .fillMaxSize()
+          .background(columnHeaderColor)
+      )
+    }
+    leftTopCorner = LeftTopCorner(
+      x = paddingLeft,
+      y = contentPadding.calculateTopPadding().roundToPx(),
+      width = timeColumnWidthPx,
+      height = columnHeaderHeightPx,
+      positionInItemProvider = _items.lastIndex
+    )
   }
 }
 

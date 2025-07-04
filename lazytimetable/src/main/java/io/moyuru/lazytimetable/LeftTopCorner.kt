@@ -1,6 +1,6 @@
 package io.moyuru.lazytimetable
 
-internal data class TimeLabel(
+internal class LeftTopCorner(
   val positionInItemProvider: Int,
   val width: Int,
   val height: Int,

@@ -254,6 +254,6 @@ private val stages = listOf(
 )
 
 val tomorrowland = Event(
-  startAt = 1752836400,
+  startAt = 1752832800L,
   stages = stages,
 )

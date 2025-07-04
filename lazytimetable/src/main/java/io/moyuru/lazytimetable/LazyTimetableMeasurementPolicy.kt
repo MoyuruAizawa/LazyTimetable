@@ -44,6 +44,7 @@ private fun measurementPolicy(
         VisibleItem(
           x,
           y,
+          0f,
           period.columnNumber,
           measure(
             period.positionInItemProvider,
@@ -67,6 +68,7 @@ private fun measurementPolicy(
       VisibleItem(
         x = x,
         y = columnHeader.y,
+        z = 2f,
         columnNumber = columnNumber,
         placeable = measure(
           columnHeader.positionInItemProvider,
@@ -80,21 +82,46 @@ private fun measurementPolicy(
       )
     )
   }
-  scope.timeLabels.forEach { timelabels ->
+  for (timeLabel in scope.timeLabels) {
+    val y = timeLabel.y + scrollYOffset
+    when {
+      y + timeLabel.height < 0 -> continue
+      y > constraints.maxHeight -> break
+    }
     visibleItems.add(
       VisibleItem(
-        x = timelabels.x,
-        y = timelabels.y + scrollYOffset,
+        x = timeLabel.x,
+        y = y,
+        z = 1f,
         columnNumber = -1,
         placeable = measure(
-          timelabels.positionInItemProvider,
+          timeLabel.positionInItemProvider,
           Constraints(
-            minWidth = timelabels.width,
-            maxWidth = timelabels.width,
+            minWidth = timeLabel.width,
+            maxWidth = timeLabel.width,
             minHeight = 0,
             maxHeight = constraints.maxHeight,
           )
         ).first()
+      )
+    )
+  }
+  scope.leftTopCorner?.let {
+    visibleItems.add(
+      VisibleItem(
+        it.x,
+        it.y,
+        1.5f,
+        -1,
+        measure(
+          it.positionInItemProvider,
+          Constraints(
+            minWidth = it.width,
+            maxWidth = it.width,
+            minHeight = it.height,
+            maxHeight = it.height,
+          )
+        ).first(),
       )
     )
   }
@@ -119,7 +146,7 @@ private fun measurementPolicy(
 
   layout(constraints.maxWidth, constraints.maxHeight) {
     visibleItems.forEach {
-      it.placeable.place(it.x, it.y)
+      it.placeable.place(it.x, it.y, it.z)
     }
   }
 }
@@ -127,6 +154,7 @@ private fun measurementPolicy(
 private class VisibleItem(
   val x: Int,
   val y: Int,
+  val z: Float,
   val columnNumber: Int,
   val placeable: Placeable,
 )
