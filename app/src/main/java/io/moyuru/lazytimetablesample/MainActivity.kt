@@ -71,7 +71,7 @@ fun Show(title: String, modifier: Modifier = Modifier) {
       .fillMaxSize()
       .padding(vertical = 2.dp)
       .background(Color.DarkGray)
-      .padding(4.dp),
+      .padding(8.dp),
   ) {
     Text(text = title, color = Color.White, modifier = Modifier)
   }
@@ -79,7 +79,10 @@ fun Show(title: String, modifier: Modifier = Modifier) {
 
 @Composable
 fun Header(stage: Stage, modifier: Modifier = Modifier) {
-  Box(contentAlignment = Alignment.Center, modifier = modifier) {
+  Box(
+    contentAlignment = Alignment.Center,
+    modifier = modifier.padding(8.dp),
+  ) {
     Text(
       text = stage.title,
       fontSize = 14.sp,
