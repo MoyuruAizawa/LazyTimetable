@@ -18,13 +18,23 @@ private const val TIME_COLUMN_BACKGROUND_Z = 2f
 private const val TIME_COLUMN_Z = TIME_COLUMN_BACKGROUND_Z + 1
 private const val TIMETABLE_Z = 1f
 
-
 @Composable
 internal fun rememberMeasurementPolicy(
   listState: LazyTimetableState,
   scope: LazyTimetableScopeImpl,
 ) = remember { measurementPolicy(listState, scope) }
 
+/**
+ * Creates a measurement policy for LazyTimetable that handles the layout and positioning
+ * of timetable items, column headers, time labels, and backgrounds.
+ * 
+ * The policy implements viewport culling to only measure and place visible items,
+ * and handles z-ordering to ensure proper layering of components.
+ * 
+ * @param listState The state of the LazyTimetable
+ * @param scope The scope containing layout information like columns, headers, and time labels
+ * @return A measurement policy function
+ */
 @OptIn(ExperimentalFoundationApi::class)
 private fun measurementPolicy(
   listState: LazyTimetableState,
@@ -179,6 +189,16 @@ private fun measurementPolicy(
   }
 }
 
+/**
+ * Represents a visible item in the timetable layout.
+ * 
+ * @param x The x-coordinate position for placement
+ * @param y The y-coordinate position for placement
+ * @param z The z-order (depth) for layering
+ * @param columnNumber The column number this item belongs to, or -1 for non-column items
+ * @param placeable The measured placeable for this item
+ * @param isPeriod Whether this item represents a period (true) or other content like headers (false)
+ */
 private class VisibleItem(
   val x: Int,
   val y: Int,
