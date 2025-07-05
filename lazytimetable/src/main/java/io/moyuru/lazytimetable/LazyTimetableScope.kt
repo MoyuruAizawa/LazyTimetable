@@ -11,24 +11,52 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 
+/**
+ * Receiver scope for [LazyTimetable] content.
+ */
 interface LazyTimetableScope {
+  /**
+   * Adds a column to the timetable.
+   *
+   * @param header The header composable for this column.
+   * @param columnContent The content of this column, defined using [LazyTimetableColumnScope].
+   */
   fun column(
     header: @Composable () -> Unit,
     columnContent: LazyTimetableColumnScope.() -> Unit,
   )
 
+  /**
+   * Adds time labels to the timetable.
+   *
+   * @param timeLabel The composable function to display time labels. The parameter is the time in epoch seconds.
+   */
   fun timeLabel(
-    timeLabel: @Composable (Long) -> Unit,
+    timeLabel: @Composable (epochSec: Long) -> Unit,
   )
 }
 
+/**
+ * Receiver scope for column content in [LazyTimetableScope.column].
+ */
 interface LazyTimetableColumnScope {
+  /**
+   * Adds a single item to the column.
+   *
+   * @param durationSec The duration of this item in seconds.
+   * @param content The composable content for this item.
+   */
   fun item(
     durationSec: Int,
     content: @Composable () -> Unit
   )
 }
 
+/**
+ * Implementation of [LazyTimetableColumnScope] that accumulates column items.
+ *
+ * @param accumulator Function to accumulate items with their duration and content.
+ */
 class LazyTimetableColumnScopeImpl(
   private val accumulator: (durationSec: Int, content: @Composable () -> Unit) -> Unit,
 ) : LazyTimetableColumnScope {
@@ -40,6 +68,21 @@ class LazyTimetableColumnScopeImpl(
   }
 }
 
+/**
+ * Internal implementation of [LazyTimetableScope] that handles the virtual measurement and positioning
+ * of timetable items.
+ *
+ * @param density Density for converting between Dp and pixels.
+ * @param columnWidth Width of each column in Dp.
+ * @param heightPerMinute Height per minute for time-based positioning in Dp.
+ * @param columnHeaderHeight Height of column headers in Dp.
+ * @param timeColumnWidth Width of the time column in Dp.
+ * @param horizontalSpacing Horizontal spacing between columns in Dp.
+ * @param columnHeaderColor Background color for column headers.
+ * @param timeColumnColor Background color for the time column.
+ * @param baseEpochSec Base time in epoch seconds for calculating relative positions.
+ * @param contentPadding Padding around the timetable content.
+ */
 internal class LazyTimetableScopeImpl(
   density: Density,
   columnWidth: Dp,
@@ -77,6 +120,9 @@ internal class LazyTimetableScopeImpl(
   internal val timetableViewPortLeft = contentPadding.calculateLeftPadding(LayoutDirection.Ltr).roundToPx() +
       timeColumnWidthPx
 
+  /**
+   * Estimates the position and size of a column header.
+   */
   fun estimateColumnHeader(
     columnNumber: Int,
     timetableViewPortLeft: Int,
@@ -95,6 +141,9 @@ internal class LazyTimetableScopeImpl(
     )
   }
 
+  /**
+   * Estimates the position and size of a period.
+   */
   fun estimatePeriod(
     columnNumber: Int,
     previous: Period?,
@@ -171,6 +220,9 @@ internal class LazyTimetableScopeImpl(
     }
   }
 
+  /**
+   * Creates background elements for the column header and time column.
+   */
   internal fun background() {
     val columnHeaderBackground = ColumnHeaderBackground(
       x = 0,
