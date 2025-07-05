@@ -16,6 +16,22 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
+/**
+ * A composable that creates a lazy-loaded, scrollable timetable layout.
+ *
+ * @param listState State object that provides scroll state information
+ * @param horizontalSpacing Horizontal spacing between columns
+ * @param contentPadding Padding around the entire content area
+ * @param columnWidth Width of each column in the timetable
+ * @param heightPerMinute Height allocated per minute of duration
+ * @param columnHeaderHeight Height of the column headers
+ * @param columnHeaderColor Background color of the column headers
+ * @param timeColumnWidth Width of the time column (left side time labels)
+ * @param timeColumnColor Background color of the time column (left side time labels)
+ * @param baseEpochSec Base timestamp in epoch seconds used as the reference point for time calculations
+ * @param timeLabel Composable function for rendering time labels, receives epoch seconds as parameter
+ * @param content DSL block for defining the timetable structure using [LazyTimetableScope]
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LazyTimetable(
