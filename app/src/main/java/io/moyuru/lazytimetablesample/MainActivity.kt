@@ -6,18 +6,21 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import io.moyuru.lazytimetable.LazyTimetable
 import io.moyuru.lazytimetablesample.ui.theme.LazyTimetableSampleTheme
 import java.time.Instant
@@ -31,30 +34,39 @@ class MainActivity : ComponentActivity() {
     setContent {
       LazyTimetableSampleTheme {
         Scaffold { contentPaddings ->
-          LazyTimetable(
-            contentPadding = contentPaddings,
-            horizontalSpacing = 4.dp,
-            columnWidth = 120.dp,
-            heightPerMinute = 1.5.dp,
-            columnHeaderHeight = 80.dp,
-            columnHeaderColor = Color.White,
-            timeColumnWidth = 100.dp,
-            timeColumnColor = Color.White,
-            baseEpochSec = tomorrowland.startAt,
-            timeLabel = { TimeLabel(it) },
-            modifier = Modifier.fillMaxSize(),
-          ) {
-            tomorrowland.stages.forEach { stage ->
-              column(header = { Header(stage) }) {
-                stage.periods.forEach { period ->
-                  item(period.durationSec) {
-                    when (period) {
-                      is Period.Empty -> Spacer(Modifier)
-                      is Period.Show -> Show(period.title)
-                    }
-                  }
-                }
-              }
+          Timetable(contentPaddings)
+        }
+      }
+    }
+  }
+}
+
+@Composable
+fun Timetable(contentPaddings: PaddingValues) {
+  LazyTimetable(
+    contentPadding = contentPaddings,
+    horizontalSpacing = 4.dp,
+    columnWidth = 120.dp,
+    heightPerMinute = 1.5.dp,
+    columnHeaderHeight = 80.dp,
+    columnHeaderColor = Brush.horizontalGradient(
+      listOf(Color(0xFF72113A), Color(0xFFB62958))
+    ),
+    timeColumnWidth = 100.dp,
+    timeColumnColor = SolidColor(Color.Black),
+    baseEpochSec = tomorrowland.startAt,
+    timeLabel = { TimeLabel(it) },
+    modifier = Modifier
+      .fillMaxSize()
+      .background(Color.Black),
+  ) {
+    tomorrowland.stages.forEach { stage ->
+      column(header = { Header(stage) }) {
+        stage.periods.forEachIndexed { i, period ->
+          item(period.durationSec) {
+            when (period) {
+              is Period.Empty -> Spacer(Modifier)
+              is Period.Show -> Show(period.title)
             }
           }
         }
@@ -69,11 +81,15 @@ fun Show(title: String, modifier: Modifier = Modifier) {
     contentAlignment = Alignment.Center,
     modifier = modifier
       .fillMaxSize()
-      .padding(vertical = 2.dp)
-      .background(Color.DarkGray)
+      .padding(bottom = 4.dp)
+      .background(Color.White)
       .padding(8.dp),
   ) {
-    Text(text = title, color = Color.White, modifier = Modifier)
+    Text(
+      text = title,
+      style = MaterialTheme.typography.bodyMedium,
+      color = Color.Black,
+    )
   }
 }
 
@@ -85,7 +101,8 @@ fun Header(stage: Stage, modifier: Modifier = Modifier) {
   ) {
     Text(
       text = stage.title,
-      fontSize = 14.sp,
+      style = MaterialTheme.typography.titleSmall,
+      color = Color.White,
     )
   }
 }
@@ -98,6 +115,10 @@ fun TimeLabel(epochSec: Long, modifier: Modifier = Modifier) {
         .atZone(ZoneId.of("Europe/Brussels"))
         .format(DateTimeFormatter.ofPattern("HH:mm"))
     }
-    Text(text = label)
+    Text(
+      text = label,
+      style = MaterialTheme.typography.labelMedium,
+      color = Color(0xFFA0AEC0)
+    )
   }
 }

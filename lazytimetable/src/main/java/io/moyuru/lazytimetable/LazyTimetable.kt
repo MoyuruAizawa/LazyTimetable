@@ -8,7 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.platform.LocalDensity
@@ -45,6 +47,40 @@ fun LazyTimetable(
   columnHeaderColor: Color,
   timeColumnWidth: Dp,
   timeColumnColor: Color,
+  baseEpochSec: Long,
+  timeLabel: @Composable (Long) -> Unit,
+  content: LazyTimetableScope.() -> Unit
+) {
+  LazyTimetable(
+    modifier,
+    timetableState,
+    horizontalSpacing,
+    contentPadding,
+    columnWidth,
+    heightPerMinute,
+    columnHeaderHeight,
+    SolidColor(columnHeaderColor),
+    timeColumnWidth,
+    SolidColor(timeColumnColor),
+    baseEpochSec,
+    timeLabel,
+    content,
+  )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun LazyTimetable(
+  modifier: Modifier = Modifier,
+  timetableState: LazyTimetableState = rememberLazyTimetableState(),
+  horizontalSpacing: Dp = 0.dp,
+  contentPadding: PaddingValues = PaddingValues(),
+  columnWidth: Dp,
+  heightPerMinute: Dp,
+  columnHeaderHeight: Dp,
+  columnHeaderColor: Brush,
+  timeColumnWidth: Dp,
+  timeColumnColor: Brush,
   baseEpochSec: Long,
   timeLabel: @Composable (Long) -> Unit,
   content: LazyTimetableScope.() -> Unit

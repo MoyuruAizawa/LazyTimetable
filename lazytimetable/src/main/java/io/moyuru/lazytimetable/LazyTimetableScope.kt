@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
@@ -90,8 +91,8 @@ internal class LazyTimetableScopeImpl(
   columnHeaderHeight: Dp,
   timeColumnWidth: Dp,
   horizontalSpacing: Dp,
-  private val columnHeaderColor: Color,
-  private val timeColumnColor: Color,
+  private val columnHeaderColor: Brush,
+  private val timeColumnColor: Brush,
   private val baseEpochSec: Long,
   internal val contentPadding: PaddingValues,
 ) : LazyTimetableScope, Density by density {
