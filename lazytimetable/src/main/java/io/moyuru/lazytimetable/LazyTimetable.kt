@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 /**
  * A composable that creates a lazy-loaded, scrollable timetable layout.
  *
- * @param listState State object that provides scroll state information
+ * @param timetableState State object that provides scroll state information
  * @param horizontalSpacing Horizontal spacing between columns
  * @param contentPadding Padding around the entire content area
  * @param columnWidth Width of each column in the timetable
@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun LazyTimetable(
   modifier: Modifier = Modifier,
-  listState: LazyTimetableState = rememberLazyTimetableState(),
+  timetableState: LazyTimetableState = rememberLazyTimetableState(),
   horizontalSpacing: Dp = 0.dp,
   contentPadding: PaddingValues = PaddingValues(),
   columnWidth: Dp,
@@ -87,18 +87,18 @@ fun LazyTimetable(
 
   LazyLayout(
     itemProvider = { itemProvider },
-    measurePolicy = rememberMeasurementPolicy(listState, scope),
+    measurePolicy = rememberMeasurementPolicy(timetableState, scope),
     modifier = modifier
       .pointerInput(Unit) {
         val velocityTracker = VelocityTracker()
         detectDragGestures(
           onDragStart = { offset ->
             velocityTracker.resetTracking()
-            coroutineScope.launch { listState.stopFling() }
+            coroutineScope.launch { timetableState.stopFling() }
           },
           onDrag = { change, dragAmount ->
             velocityTracker.addPosition(change.uptimeMillis, change.position)
-            listState.scroll(dragAmount.x, dragAmount.y)
+            timetableState.scroll(dragAmount.x, dragAmount.y)
             change.consume()
           },
           onDragCancel = {
@@ -107,7 +107,7 @@ fun LazyTimetable(
           onDragEnd = {
             val velocity = velocityTracker.calculateVelocity()
             coroutineScope.launch {
-              listState.fling(velocity.x, velocity.y)
+              timetableState.fling(velocity.x, velocity.y)
             }
             velocityTracker.resetTracking()
           }
