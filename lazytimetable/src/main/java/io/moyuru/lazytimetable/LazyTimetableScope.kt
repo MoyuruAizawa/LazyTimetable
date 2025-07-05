@@ -123,7 +123,7 @@ internal class LazyTimetableScopeImpl(
   /**
    * Estimates the position and size of a column header.
    */
-  fun estimateColumnHeader(
+  private fun estimateColumnHeader(
     columnNumber: Int,
     timetableViewPortLeft: Int,
     paddingTop: Int,
@@ -144,7 +144,7 @@ internal class LazyTimetableScopeImpl(
   /**
    * Estimates the position and size of a period.
    */
-  fun estimatePeriod(
+  private fun estimatePeriod(
     columnNumber: Int,
     previous: Period?,
     durationSec: Int,
