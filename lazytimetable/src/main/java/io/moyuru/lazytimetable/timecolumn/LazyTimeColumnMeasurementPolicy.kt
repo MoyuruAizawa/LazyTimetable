@@ -32,7 +32,7 @@ internal fun lazyTimeColumnMeasurementPolicy(
         x = timeLabel.x + paddingLeftPx,
         y = y,
         z = 0f,
-        columnNumber = -1,
+        columnNumber = null,
         placeable = measure(
           index,
           Constraints(

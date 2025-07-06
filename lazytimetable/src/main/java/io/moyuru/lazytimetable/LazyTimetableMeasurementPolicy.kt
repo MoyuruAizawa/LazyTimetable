@@ -6,7 +6,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.layout.LazyLayoutMeasureScope
 import androidx.compose.ui.layout.MeasureResult
-import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.LayoutDirection
 
@@ -60,17 +59,13 @@ internal fun lazyTimetableMeasurementPolicy(
               maxHeight = period.height,
             )
           ).first(),
-          isPeriod = true,
         )
       )
     }
   }
 
-  val periods = visibleItems.filter { it.isPeriod }
-  val visibleFirstPeriod = periods.firstOrNull()
-  val visibleLastPeriod = periods.lastOrNull()
-  state.firstVisibleColumnNumber = visibleFirstPeriod?.columnNumber ?: -1
-  state.lastVisibleColumnNumber = visibleLastPeriod?.columnNumber ?: -1
+  state.firstVisibleColumnNumber = visibleItems.firstOrNull()?.columnNumber ?: -1
+  state.lastVisibleColumnNumber = visibleItems.lastOrNull()?.columnNumber ?: -1
   state.scrollHorizontalMin =
     scope.columns.lastOrNull()?.firstOrNull()?.let {
       constraints.maxWidth -
@@ -87,22 +82,3 @@ internal fun lazyTimetableMeasurementPolicy(
     }
   }
 }
-
-/**
- * Represents a visible item in the timetable layout.
- * 
- * @param x The x-coordinate position for placement
- * @param y The y-coordinate position for placement
- * @param z The z-order (depth) for layering
- * @param columnNumber The column number this item belongs to, or -1 for non-column items
- * @param placeable The measured placeable for this item
- * @param isPeriod Whether this item represents a period (true) or other content like headers (false)
- */
-internal class VisibleItem(
-  val x: Int,
-  val y: Int,
-  val z: Float,
-  val columnNumber: Int,
-  val placeable: Placeable,
-  val isPeriod: Boolean = false,
-)

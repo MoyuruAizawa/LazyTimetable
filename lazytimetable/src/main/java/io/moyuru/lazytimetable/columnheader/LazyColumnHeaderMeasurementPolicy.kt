@@ -38,7 +38,7 @@ internal fun lazyColumnHeaderMeasurementPolicy(
         x = x,
         y = paddingTop + columnHeader.y,
         z = 0f,
-        columnNumber = -1,
+        columnNumber = index,
         placeable = measure(
           index,
           Constraints(
