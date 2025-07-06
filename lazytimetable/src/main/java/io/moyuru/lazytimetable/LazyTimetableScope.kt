@@ -2,7 +2,6 @@ package io.moyuru.lazytimetable
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
@@ -127,6 +126,7 @@ internal class LazyTimetableScopeImpl(
    * Estimates the position and size of a period.
    */
   private fun estimatePeriod(
+    position: Int,
     columnNumber: Int,
     previous: Period?,
     durationSec: Int,
@@ -136,7 +136,7 @@ internal class LazyTimetableScopeImpl(
     val startAt = previous?.endAtSec ?: baseEpochSec
     return Period(
       columnNumber = columnNumber,
-      positionInItemProvider = items.size,
+      positionInItemProvider = position,
       startAtSec = startAt,
       endAtSec = startAt + durationSec,
       width = columnWidthPx,
@@ -166,6 +166,7 @@ internal class LazyTimetableScopeImpl(
       LazyTimetableColumnScopeImpl { durationSec, content ->
         val previous = column.getOrNull(column.lastIndex)
         val period = estimatePeriod(
+          items.size,
           columnNumber,
           previous,
           durationSec,
@@ -188,7 +189,6 @@ internal class LazyTimetableScopeImpl(
       if (next < end) next else null
     }.forEach {
       val measuredTimeLabel = TimeLabel(
-        _timeLabels.size,
         timeColumnWidthPx,
         60 * heightPerMinutePx,
         paddingLeft,

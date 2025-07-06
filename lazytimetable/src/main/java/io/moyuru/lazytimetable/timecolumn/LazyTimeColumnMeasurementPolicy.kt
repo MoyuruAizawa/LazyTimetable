@@ -17,8 +17,8 @@ internal fun lazyTimeColumnMeasurementPolicy(
 ): LazyLayoutMeasureScope.(Constraints) -> MeasureResult = { constraints ->
   val visibleItems = mutableListOf<VisibleItem>()
   val scrollYOffset = state.scrollYOffset
-
-  for (timeLabel in scope.timeLabels) {
+  for (index in 0 until scope.timeLabels.size) {
+    val timeLabel = scope.timeLabels[index]
     val y = timeLabel.y + scrollYOffset
     when {
       y + timeLabel.height < 0 -> continue
@@ -31,7 +31,7 @@ internal fun lazyTimeColumnMeasurementPolicy(
         z = 0f,
         columnNumber = -1,
         placeable = measure(
-          timeLabel.positionInItemProvider,
+          index,
           Constraints(
             minWidth = timeLabel.width,
             maxWidth = timeLabel.width,

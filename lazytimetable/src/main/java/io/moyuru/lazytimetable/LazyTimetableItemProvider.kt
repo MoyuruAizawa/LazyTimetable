@@ -15,8 +15,4 @@ internal class LazyTimetableItemProvider(
   override fun Item(index: Int, key: Any) {
     scope.items[index].content()
   }
-
-  override fun getContentType(index: Int): Any? {
-    return scope.items[index].contentType
-  }
 }

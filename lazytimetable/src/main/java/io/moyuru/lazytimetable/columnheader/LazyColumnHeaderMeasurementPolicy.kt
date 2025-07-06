@@ -16,11 +16,10 @@ internal fun lazyColumnHeaderMeasurementPolicy(
   scope: LazyTimetableScopeImpl,
 ) : LazyLayoutMeasureScope.(Constraints) -> MeasureResult = { constraints ->
   val visibleItems = mutableListOf<VisibleItem>()
-  val previousVisibleColumn = (state.firstVisibleColumnNumber - 1).coerceAtLeast(0)
   val scrollXOffset = state.scrollXOffset
 
-  for (columnNumber in previousVisibleColumn until scope.columnCount) {
-    val columnHeader = scope.columnHeaders[columnNumber]
+  for (index in 0 until scope.columnCount) {
+    val columnHeader = scope.columnHeaders[index]
     val x = columnHeader.x + scrollXOffset
     when {
       x + columnHeader.width < 0 -> continue
@@ -31,9 +30,9 @@ internal fun lazyColumnHeaderMeasurementPolicy(
         x = x,
         y = columnHeader.y,
         z = 0f,
-        columnNumber = columnNumber,
+        columnNumber = -1,
         placeable = measure(
-          columnNumber,
+          index,
           Constraints(
             minWidth = columnHeader.width,
             maxWidth = columnHeader.width,
