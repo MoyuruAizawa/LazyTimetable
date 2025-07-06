@@ -10,6 +10,7 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 
 @Composable
@@ -36,6 +37,11 @@ class LazyTimetableState internal constructor() {
   private val scrollXAnimatable = Animatable(0f)
   private val scrollYAnimatable = Animatable(0f)
 
+  internal fun canScroll(deltaX: Float, deltaY: Float): Boolean {
+    return (scrollHorizontalMax > scrollXOffset + deltaX && scrollXOffset + deltaX < scrollHorizontalMin) ||
+        (scrollVerticalMax > scrollYOffset + deltaY && scrollYOffset + deltaY < scrollVerticalMin)
+  }
+
   internal fun scroll(deltaX: Float, deltaY: Float) {
     scrollXOffset = (scrollXOffset + deltaX.toInt())
       .coerceAtMost(scrollHorizontalMax)
@@ -47,26 +53,30 @@ class LazyTimetableState internal constructor() {
 
   internal suspend fun fling(velocityX: Float, velocityY: Float) {
     coroutineScope {
-      scrollXAnimatable.snapTo(scrollXOffset.toFloat())
-      scrollXAnimatable.animateDecay(
-        initialVelocity = velocityX,
-        animationSpec = exponentialDecay()
-      ) {
-        scrollXOffset = value.toInt()
-          .coerceAtMost(scrollHorizontalMax)
-          .coerceAtLeast(scrollHorizontalMin)
+      val xJob = async {
+        scrollXAnimatable.snapTo(scrollXOffset.toFloat())
+        scrollXAnimatable.animateDecay(
+          initialVelocity = velocityX,
+          animationSpec = exponentialDecay()
+        ) {
+          scrollXOffset = value.toInt()
+            .coerceAtMost(scrollHorizontalMax)
+            .coerceAtLeast(scrollHorizontalMin)
+        }
       }
-    }
-    coroutineScope {
-      scrollYAnimatable.snapTo(scrollYOffset.toFloat())
-      scrollYAnimatable.animateDecay(
-        initialVelocity = velocityY,
-        animationSpec = exponentialDecay()
-      ) {
-        scrollYOffset = value.toInt()
-          .coerceAtMost(scrollVerticalMax)
-          .coerceAtLeast(scrollVerticalMin)
+      val yJob = async {
+        scrollYAnimatable.snapTo(scrollYOffset.toFloat())
+        scrollYAnimatable.animateDecay(
+          initialVelocity = velocityY,
+          animationSpec = exponentialDecay()
+        ) {
+          scrollYOffset = value.toInt()
+            .coerceAtMost(scrollVerticalMax)
+            .coerceAtLeast(scrollVerticalMin)
+        }
       }
+      xJob.await()
+      yJob.await()
     }
   }
 

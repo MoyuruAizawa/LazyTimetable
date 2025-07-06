@@ -150,8 +150,9 @@ fun LazyTimetable(
               },
               onDrag = { change, dragAmount ->
                 velocityTracker.addPosition(change.uptimeMillis, change.position)
+                if (timetableState.canScroll(dragAmount.x, dragAmount.y))
+                  change.consume()
                 timetableState.scroll(dragAmount.x, dragAmount.y)
-                change.consume()
               },
               onDragCancel = {
                 velocityTracker.resetTracking()
