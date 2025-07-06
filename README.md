@@ -27,18 +27,23 @@ LazyTimetable(
   contentPadding = contentPaddings,
   horizontalSpacing = 4.dp,
   columnWidth = 120.dp,
+  // his value is used to determine how much height to allocate for the period on the Timetable.
   heightPerMinute = 1.5.dp,
   columnHeaderHeight = 80.dp,
   columnHeaderColor = Color.White,
   timeColumnWidth = 100.dp,
   timeColumnColor = Color.White,
+  // the start time of the initial period in Epoch Seconds.
   baseEpochSec = tomorrowland.startAt,
+  // A Composable function that generates labels placed in the TimeColumn displayed on the left side of the timetable.
   timeLabel = { TimeLabel(it) },
   modifier = Modifier.fillMaxSize(),
 ) {
   festival.stages.forEach { stage ->
+    // A DSL for generating Columns with Headers
     column(header = { Header(stage) }) {
       stage.periods.forEach { period ->
+        // A DSL for generating periods within a column.
         item(period.durationSec) {
           when (period) {
             is Period.Empty -> Spacer(Modifier)
