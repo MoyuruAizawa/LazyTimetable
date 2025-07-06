@@ -3,6 +3,7 @@
 package io.moyuru.lazytimetable
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.layout.LazyLayoutMeasureScope
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.Placeable
@@ -24,6 +25,7 @@ import kotlin.math.max
  */
 @OptIn(ExperimentalFoundationApi::class)
 internal fun lazyTimetableMeasurementPolicy(
+  contentPadding: PaddingValues,
   listState: LazyTimetableState,
   scope: LazyTimetableScopeImpl,
 ): LazyLayoutMeasureScope.(Constraints) -> MeasureResult = { constraints ->
@@ -74,7 +76,7 @@ internal fun lazyTimetableMeasurementPolicy(
     scope.columns.lastOrNull()?.firstOrNull()?.let {
       constraints.maxWidth -
           (it.x + it.width) -
-          scope.contentPadding.calculateRightPadding(LayoutDirection.Ltr).roundToPx()
+          contentPadding.calculateRightPadding(LayoutDirection.Ltr).roundToPx()
     } ?: 0
   var mostBottom = 0
   scope.columns.forEach { value ->
@@ -82,7 +84,7 @@ internal fun lazyTimetableMeasurementPolicy(
   }
   listState.scrollVerticalMin = constraints.maxHeight -
       mostBottom -
-      scope.contentPadding.calculateBottomPadding().roundToPx()
+      contentPadding.calculateBottomPadding().roundToPx()
 
   layout(constraints.maxWidth, constraints.maxHeight) {
     visibleItems.forEach {

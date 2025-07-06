@@ -108,7 +108,6 @@ fun LazyTimetable(
       columnHeaderHeight = columnHeaderHeight,
       timeColumnWidth = timeColumnWidth,
       horizontalSpacing = horizontalSpacing,
-      contentPadding = contentPadding,
       baseEpochSec = baseEpochSec,
     )
   }
@@ -138,7 +137,7 @@ fun LazyTimetable(
       )
       LazyLayout(
         itemProvider = { LazyTimetableItemProvider(scope) },
-        measurePolicy = lazyTimetableMeasurementPolicy(timetableState, scope),
+        measurePolicy = lazyTimetableMeasurementPolicy(contentPadding, timetableState, scope),
         modifier = Modifier
           .weight(1f)
           .clipToBounds()

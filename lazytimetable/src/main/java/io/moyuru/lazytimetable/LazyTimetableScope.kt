@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.LayoutDirection
 
 /**
  * Receiver scope for [LazyTimetable] content.
@@ -73,7 +72,6 @@ class LazyTimetableColumnScopeImpl(
  * @param timeColumnWidth Width of the time column in Dp.
  * @param horizontalSpacing Horizontal spacing between columns in Dp.
  * @param baseEpochSec Base time in epoch seconds for calculating relative positions.
- * @param contentPadding Padding around the timetable content.
  */
 internal class LazyTimetableScopeImpl(
   density: Density,
@@ -83,7 +81,6 @@ internal class LazyTimetableScopeImpl(
   timeColumnWidth: Dp,
   horizontalSpacing: Dp,
   private val baseEpochSec: Long,
-  internal val contentPadding: PaddingValues,
 ) : LazyTimetableScope, Density by density {
   private val _items = mutableListOf<VirtualMeasuredItem>()
   internal val items: List<VirtualMeasuredItem> = _items
