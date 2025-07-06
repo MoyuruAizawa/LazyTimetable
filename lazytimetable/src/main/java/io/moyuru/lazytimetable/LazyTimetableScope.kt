@@ -165,7 +165,6 @@ internal class LazyTimetableScopeImpl(
     val allPeriods = columns.flatMap { it }
     val start = allPeriods.minBy { it.startAtSec }.startAtSec
     val end = allPeriods.maxBy { it.endAtSec }.endAtSec
-    val paddingLeft = contentPadding.calculateLeftPadding(LayoutDirection.Ltr).roundToPx()
     generateSequence(start) { previous ->
       val next = previous + 60 * 60
       if (next < end) next else null
@@ -173,7 +172,7 @@ internal class LazyTimetableScopeImpl(
       val measuredTimeLabel = TimeLabel(
         timeColumnWidthPx,
         60 * heightPerMinutePx,
-        paddingLeft,
+        0,
         (it - baseEpochSec).toInt() / 60 * heightPerMinutePx,
         { timeLabel(it) },
       )

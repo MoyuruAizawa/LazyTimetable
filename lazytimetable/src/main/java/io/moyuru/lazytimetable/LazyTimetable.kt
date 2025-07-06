@@ -19,6 +19,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import io.moyuru.lazytimetable.columnheader.LazyColumnHeader
 import io.moyuru.lazytimetable.timecolumn.LazyTimeColumn
@@ -129,6 +130,7 @@ fun LazyTimetable(
       modifier = Modifier.weight(1f)
     ) {
       LazyTimeColumn(
+        contentPadding.calculateLeftPadding(LayoutDirection.Ltr),
         timetableState,
         scope,
         modifier = Modifier

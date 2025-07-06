@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.layout.LazyLayoutMeasureScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
 import io.moyuru.lazytimetable.LazyTimetableScopeImpl
 import io.moyuru.lazytimetable.LazyTimetableState
 import io.moyuru.lazytimetable.VisibleItem
@@ -12,11 +13,13 @@ import io.moyuru.lazytimetable.VisibleItem
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun lazyTimeColumnMeasurementPolicy(
+  paddingLeft: Dp,
   state: LazyTimetableState,
   scope: LazyTimetableScopeImpl,
 ): LazyLayoutMeasureScope.(Constraints) -> MeasureResult = { constraints ->
   val visibleItems = mutableListOf<VisibleItem>()
   val scrollYOffset = state.scrollYOffset
+  val paddingLeftPx = paddingLeft.roundToPx()
   for (index in 0 until scope.timeLabels.size) {
     val timeLabel = scope.timeLabels[index]
     val y = timeLabel.y + scrollYOffset
@@ -26,7 +29,7 @@ internal fun lazyTimeColumnMeasurementPolicy(
     }
     visibleItems.add(
       VisibleItem(
-        x = timeLabel.x,
+        x = timeLabel.x + paddingLeftPx,
         y = y,
         z = 0f,
         columnNumber = -1,
