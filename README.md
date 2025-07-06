@@ -102,15 +102,12 @@ interface LazyTimetableScope {
         header: @Composable () -> Unit,
         columnContent: LazyTimetableColumnScope.() -> Unit
     )
-    
-    fun timeLabel(timeLabel: @Composable (Long) -> Unit)
 }
 ```
 
 #### Functions
 
-- **`column`**: Adds a column to the timetable with a header and content
-- **`timeLabel`**: Defines how time labels are displayed (automatically generated for each hour)
+- **`column`**: Adds a column to the timetable with a header and column content
 
 ### LazyTimetableColumnScope
 
