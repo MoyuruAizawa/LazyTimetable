@@ -20,6 +20,19 @@ interface LazyTimetableScope {
   )
 }
 
+fun <C> LazyTimetableScope.columns(
+  columns: List<C>,
+  header: @Composable (C) -> Unit,
+  columnContent: LazyTimetableColumnScope.(C) -> Unit
+) {
+  columns.forEach {
+    column(
+      header = { header(it) },
+      columnContent = { columnContent(it) },
+    )
+  }
+}
+
 /**
  * Receiver scope for column content in [LazyTimetableScope.column].
  */
@@ -34,6 +47,14 @@ interface LazyTimetableColumnScope {
     durationSec: Int,
     content: @Composable () -> Unit
   )
+}
+
+fun <I> LazyTimetableColumnScope.items(items: List<I>, durationSec: (I) -> Int, itemContent: @Composable (I) -> Unit) {
+  items.forEach {
+    item(durationSec(it)) {
+      itemContent(it)
+    }
+  }
 }
 
 /**

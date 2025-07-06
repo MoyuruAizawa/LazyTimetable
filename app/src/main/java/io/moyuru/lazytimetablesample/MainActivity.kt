@@ -22,6 +22,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import io.moyuru.lazytimetable.LazyTimetable
+import io.moyuru.lazytimetable.columns
+import io.moyuru.lazytimetable.items
 import io.moyuru.lazytimetablesample.ui.theme.LazyTimetableSampleTheme
 import java.time.Instant
 import java.time.ZoneId
@@ -60,15 +62,17 @@ fun Timetable(contentPaddings: PaddingValues) {
       .fillMaxSize()
       .background(Color.Black),
   ) {
-    tomorrowland.stages.forEach { stage ->
-      column(header = { Header(stage) }) {
-        stage.periods.forEachIndexed { i, period ->
-          item(period.durationSec) {
-            when (period) {
-              is Period.Empty -> Spacer(Modifier)
-              is Period.Show -> Show(period.title)
-            }
-          }
+    columns(
+      tomorrowland.stages,
+      header = { Header(it) }
+    ) { stage ->
+      items(
+        stage.periods,
+        durationSec = { period -> period.durationSec }
+      ) { period ->
+        when (period) {
+          is Period.Empty -> Spacer(Modifier)
+          is Period.Show -> Show(period.title)
         }
       }
     }
