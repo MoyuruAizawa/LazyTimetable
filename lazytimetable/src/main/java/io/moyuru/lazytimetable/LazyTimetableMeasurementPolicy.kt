@@ -9,7 +9,6 @@ import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.LayoutDirection
-import kotlin.math.max
 
 
 /**
@@ -19,20 +18,20 @@ import kotlin.math.max
  * The policy implements viewport culling to only measure and place visible items,
  * and handles z-ordering to ensure proper layering of components.
  * 
- * @param listState The state of the LazyTimetable
+ * @param state The state of the LazyTimetable
  * @param scope The scope containing layout information like columns, headers, and time labels
  * @return A measurement policy function
  */
 @OptIn(ExperimentalFoundationApi::class)
 internal fun lazyTimetableMeasurementPolicy(
   contentPadding: PaddingValues,
-  listState: LazyTimetableState,
+  state: LazyTimetableState,
   scope: LazyTimetableScopeImpl,
 ): LazyLayoutMeasureScope.(Constraints) -> MeasureResult = { constraints ->
   val visibleItems = mutableListOf<VisibleItem>()
-  val previousVisibleColumn = (listState.firstVisibleColumnNumber - 1).coerceAtLeast(0)
-  val scrollYOffset = listState.scrollYOffset
-  val scrollXOffset = listState.scrollXOffset
+  val previousVisibleColumn = (state.firstVisibleColumnNumber - 1).coerceAtLeast(0)
+  val scrollYOffset = state.scrollYOffset
+  val scrollXOffset = state.scrollXOffset
 
   for (columnNumber in previousVisibleColumn until scope.columnCount) {
     val column = scope.columns[columnNumber]
@@ -70,20 +69,16 @@ internal fun lazyTimetableMeasurementPolicy(
   val periods = visibleItems.filter { it.isPeriod }
   val visibleFirstPeriod = periods.firstOrNull()
   val visibleLastPeriod = periods.lastOrNull()
-  listState.firstVisibleColumnNumber = visibleFirstPeriod?.columnNumber ?: -1
-  listState.lastVisibleColumnNumber = visibleLastPeriod?.columnNumber ?: -1
-  listState.scrollHorizontalMin =
+  state.firstVisibleColumnNumber = visibleFirstPeriod?.columnNumber ?: -1
+  state.lastVisibleColumnNumber = visibleLastPeriod?.columnNumber ?: -1
+  state.scrollHorizontalMin =
     scope.columns.lastOrNull()?.firstOrNull()?.let {
       constraints.maxWidth -
           (it.x + it.width) -
           contentPadding.calculateRightPadding(LayoutDirection.Ltr).roundToPx()
     } ?: 0
-  var mostBottom = 0
-  scope.columns.forEach { value ->
-    mostBottom = max(mostBottom, value.lastOrNull()?.let { it.y + it.height } ?: 0)
-  }
-  listState.scrollVerticalMin = constraints.maxHeight -
-      mostBottom -
+  state.scrollVerticalMin = constraints.maxHeight -
+      scope.columns.maxOf { it.lastOrNull()?.bottom ?: 0 } -
       contentPadding.calculateBottomPadding().roundToPx()
 
   layout(constraints.maxWidth, constraints.maxHeight) {
