@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -125,6 +126,7 @@ fun LazyTimetable(
     itemProvider = { itemProvider },
     measurePolicy = rememberMeasurementPolicy(timetableState, scope),
     modifier = modifier
+      .clipToBounds()
       .pointerInput(Unit) {
         val velocityTracker = VelocityTracker()
         detectDragGestures(
