@@ -103,26 +103,6 @@ internal class LazyTimetableScopeImpl(
   private val horizontalSpacingPx = horizontalSpacing.roundToPx()
 
   /**
-   * Estimates the position and size of a column header.
-   */
-  private fun estimateColumnHeader(
-    columnNumber: Int,
-    timeColumnWidth: Int,
-    paddingTop: Int,
-    content: @Composable () -> Unit,
-  ): ColumnHeader {
-    return ColumnHeader(
-      width = columnWidthPx,
-      height = columnHeaderHeightPx,
-      x = timeColumnWidth +
-          columnWidthPx * columnNumber +
-          horizontalSpacingPx * columnNumber,
-      y = paddingTop,
-      content = content,
-    )
-  }
-
-  /**
    * Estimates the position and size of a period.
    */
   private fun estimatePeriod(
@@ -153,11 +133,13 @@ internal class LazyTimetableScopeImpl(
     columnContent: LazyTimetableColumnScope.() -> Unit,
   ) {
     val columnNumber = columns.size
-    val columnHeader = estimateColumnHeader(
-      columnNumber,
-      contentPadding.calculateLeftPadding(LayoutDirection.Ltr).roundToPx() + timeColumnWidthPx,
-      contentPadding.calculateTopPadding().roundToPx(),
-      header,
+    val columnHeader = ColumnHeader(
+      width = columnWidthPx,
+      height = columnHeaderHeightPx,
+      x = columnWidthPx * columnNumber +
+          horizontalSpacingPx * columnNumber,
+      y = 0,
+      content = header,
     )
     _columnHeaders.add(columnHeader)
 

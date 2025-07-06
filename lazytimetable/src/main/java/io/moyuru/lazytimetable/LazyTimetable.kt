@@ -118,6 +118,8 @@ fun LazyTimetable(
     modifier = modifier,
   ) {
     LazyColumnHeader(
+      timeColumnWidth,
+      contentPadding,
       timetableState,
       scope,
       modifier = Modifier
