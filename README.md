@@ -3,6 +3,8 @@
 A high-performance, lazy-loading timetable composable for Android Jetpack Compose.  
 Perfect for creating festival schedules, conference schedules, and any time-based multi-column layouts.
 
+https://github.com/user-attachments/assets/8a197485-cfd5-487e-982d-6cffea6137d3
+
 ## ✨ Features
 
 - **🚀 High Performance**: Lazy loading with viewport culling for smooth scrolling even with large datasets
