@@ -1,6 +1,5 @@
 package io.moyuru.lazytimetable
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp

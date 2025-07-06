@@ -19,7 +19,7 @@ internal fun lazyColumnHeaderMeasurementPolicy(
   contentPadding: PaddingValues,
   state: LazyTimetableState,
   scope: LazyTimetableScopeImpl,
-) : LazyLayoutMeasureScope.(Constraints) -> MeasureResult = { constraints ->
+): LazyLayoutMeasureScope.(Constraints) -> MeasureResult = { constraints ->
   val visibleItems = mutableListOf<VisibleItem>()
   val scrollXOffset = state.scrollXOffset
   val timeColumnWidthPx = timeColumnWidth.roundToPx()

@@ -13,10 +13,10 @@ import androidx.compose.ui.unit.LayoutDirection
 /**
  * Creates a measurement policy for LazyTimetable that handles the layout and positioning
  * of timetable items, column headers, time labels, and backgrounds.
- * 
+ *
  * The policy implements viewport culling to only measure and place visible items,
  * and handles z-ordering to ensure proper layering of components.
- * 
+ *
  * @param state The state of the LazyTimetable
  * @param scope The scope containing layout information like columns, headers, and time labels
  * @return A measurement policy function
