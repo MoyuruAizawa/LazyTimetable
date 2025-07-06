@@ -4,25 +4,15 @@ package io.moyuru.lazytimetable
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.layout.LazyLayoutMeasureScope
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.LayoutDirection
 import kotlin.math.max
 
-private const val COLUMN_HEADER_BACKGROUND_Z = 3f
-private const val COLUMN_HEADER_Z = COLUMN_HEADER_BACKGROUND_Z + 1
 private const val TIME_COLUMN_BACKGROUND_Z = 2f
 private const val TIME_COLUMN_Z = TIME_COLUMN_BACKGROUND_Z + 1
 private const val TIMETABLE_Z = 1f
-
-@Composable
-internal fun rememberMeasurementPolicy(
-  listState: LazyTimetableState,
-  scope: LazyTimetableScopeImpl,
-) = remember { measurementPolicy(listState, scope) }
 
 /**
  * Creates a measurement policy for LazyTimetable that handles the layout and positioning
@@ -36,7 +26,7 @@ internal fun rememberMeasurementPolicy(
  * @return A measurement policy function
  */
 @OptIn(ExperimentalFoundationApi::class)
-private fun measurementPolicy(
+internal fun lazyTimetableMeasurementPolicy(
   listState: LazyTimetableState,
   scope: LazyTimetableScopeImpl,
 ): LazyLayoutMeasureScope.(Constraints) -> MeasureResult = { constraints ->
@@ -54,7 +44,7 @@ private fun measurementPolicy(
       when {
         x + period.width < scope.timetableViewPortLeft -> break
         x > constraints.maxWidth -> break
-        y + period.height < scope.timetableViewPortTop -> continue
+        y + period.height < 0 -> continue
         y > constraints.maxHeight -> break
       }
       visibleItems.add(
@@ -76,29 +66,6 @@ private fun measurementPolicy(
         )
       )
     }
-    val columnHeader = scope.columnHeaders[columnNumber]
-    val x = columnHeader.x + scrollXOffset
-    when {
-      x + columnHeader.width < 0 -> continue
-      x > constraints.maxWidth -> break
-    }
-    visibleItems.add(
-      VisibleItem(
-        x = x,
-        y = columnHeader.y,
-        z = COLUMN_HEADER_Z,
-        columnNumber = columnNumber,
-        placeable = measure(
-          columnHeader.positionInItemProvider,
-          Constraints(
-            minWidth = columnHeader.width,
-            maxWidth = columnHeader.width,
-            minHeight = columnHeader.height,
-            maxHeight = columnHeader.height,
-          )
-        ).first()
-      )
-    )
   }
   for (timeLabel in scope.timeLabels) {
     val y = timeLabel.y + scrollYOffset
@@ -121,25 +88,6 @@ private fun measurementPolicy(
             maxHeight = constraints.maxHeight,
           )
         ).first()
-      )
-    )
-  }
-  scope.columnHeaderBackground?.let {
-    visibleItems.add(
-      VisibleItem(
-        it.x,
-        it.y,
-        COLUMN_HEADER_BACKGROUND_Z,
-        -1,
-        measure(
-          it.positionInItemProvider,
-          Constraints(
-            minWidth = constraints.maxWidth,
-            maxWidth = constraints.maxWidth,
-            minHeight = it.height,
-            maxHeight = it.height,
-          )
-        ).first(),
       )
     )
   }
@@ -199,7 +147,7 @@ private fun measurementPolicy(
  * @param placeable The measured placeable for this item
  * @param isPeriod Whether this item represents a period (true) or other content like headers (false)
  */
-private class VisibleItem(
+internal class VisibleItem(
   val x: Int,
   val y: Int,
   val z: Float,

@@ -18,7 +18,7 @@ internal interface VirtualMeasuredItem {
 }
 
 internal enum class ContentType {
-  Period, ColumnHeader, TimeLabel, ColumnHeaderBackground, TimeColumnBackground
+  Period, TimeLabel, ColumnHeaderBackground, TimeColumnBackground
 }
 
 internal class Period(
@@ -36,15 +36,12 @@ internal class Period(
 }
 
 internal class ColumnHeader(
-  override val positionInItemProvider: Int,
-  override val width: Int,
-  override val height: Int,
-  override val x: Int,
-  override val y: Int,
-  override val content: @Composable () -> Unit,
-) : VirtualMeasuredItem {
-  override val contentType = ContentType.ColumnHeader
-}
+  val width: Int,
+  val height: Int,
+  val x: Int,
+  val y: Int,
+  val content: @Composable () -> Unit,
+)
 
 internal data class TimeLabel(
   override val positionInItemProvider: Int,

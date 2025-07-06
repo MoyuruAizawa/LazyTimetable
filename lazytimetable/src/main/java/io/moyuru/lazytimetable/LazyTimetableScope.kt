@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
@@ -76,10 +75,8 @@ class LazyTimetableColumnScopeImpl(
  * @param density Density for converting between Dp and pixels.
  * @param columnWidth Width of each column in Dp.
  * @param heightPerMinute Height per minute for time-based positioning in Dp.
- * @param columnHeaderHeight Height of column headers in Dp.
  * @param timeColumnWidth Width of the time column in Dp.
  * @param horizontalSpacing Horizontal spacing between columns in Dp.
- * @param columnHeaderColor Background color for column headers.
  * @param timeColumnColor Background color for the time column.
  * @param baseEpochSec Base time in epoch seconds for calculating relative positions.
  * @param contentPadding Padding around the timetable content.
@@ -91,7 +88,6 @@ internal class LazyTimetableScopeImpl(
   columnHeaderHeight: Dp,
   timeColumnWidth: Dp,
   horizontalSpacing: Dp,
-  private val columnHeaderColor: Brush,
   private val timeColumnColor: Brush,
   private val baseEpochSec: Long,
   internal val contentPadding: PaddingValues,
@@ -104,8 +100,6 @@ internal class LazyTimetableScopeImpl(
   internal val timeLabels: List<TimeLabel> = _timeLabels
   private val _columns = ArrayList<List<Period>>()
   internal val columns: List<List<Period>> = _columns
-  internal var columnHeaderBackground: ColumnHeaderBackground? = null
-    private set
   internal var timeColumnBackground: TimeColumnBackground? = null
     private set
   internal val columnCount get() = columns.size
@@ -117,7 +111,6 @@ internal class LazyTimetableScopeImpl(
 
   private val horizontalSpacingPx = horizontalSpacing.roundToPx()
 
-  internal val timetableViewPortTop = (contentPadding.calculateTopPadding() + columnHeaderHeight).roundToPx()
   internal val timetableViewPortLeft = contentPadding.calculateLeftPadding(LayoutDirection.Ltr).roundToPx() +
       timeColumnWidthPx
 
@@ -131,7 +124,6 @@ internal class LazyTimetableScopeImpl(
     content: @Composable () -> Unit,
   ): ColumnHeader {
     return ColumnHeader(
-      positionInItemProvider = items.size,
       width = columnWidthPx,
       height = columnHeaderHeightPx,
       x = timetableViewPortLeft +
@@ -151,7 +143,7 @@ internal class LazyTimetableScopeImpl(
     durationSec: Int,
     content: @Composable () -> Unit,
   ): Period {
-    val previousBottom = previous?.bottom ?: timetableViewPortTop
+    val previousBottom = previous?.bottom ?: 0
     val startAt = previous?.endAtSec ?: baseEpochSec
     return Period(
       columnNumber = columnNumber,
@@ -179,7 +171,6 @@ internal class LazyTimetableScopeImpl(
       contentPadding.calculateTopPadding().roundToPx(),
       header,
     )
-    _items.add(columnHeader)
     _columnHeaders.add(columnHeader)
 
     val column = mutableListOf<Period>()
@@ -213,7 +204,7 @@ internal class LazyTimetableScopeImpl(
         timeColumnWidthPx,
         60 * heightPerMinutePx,
         paddingLeft,
-        timetableViewPortTop + (it - baseEpochSec).toInt() / 60 * heightPerMinutePx,
+        (it - baseEpochSec).toInt() / 60 * heightPerMinutePx,
         { timeLabel(it) },
       )
       _items.add(measuredTimeLabel)
@@ -225,25 +216,9 @@ internal class LazyTimetableScopeImpl(
    * Creates background elements for the column header and time column.
    */
   internal fun background() {
-    val columnHeaderBackground = ColumnHeaderBackground(
-      x = 0,
-      y = 0,
-      height = timetableViewPortTop,
-      positionInItemProvider = _items.size,
-      content = {
-        Spacer(
-          Modifier
-            .fillMaxSize()
-            .background(columnHeaderColor)
-        )
-      }
-    )
-    _items.add(columnHeaderBackground)
-    this.columnHeaderBackground = columnHeaderBackground
-
     val timeColumnBackground = TimeColumnBackground(
       x = 0,
-      y = timetableViewPortTop,
+      y = 0,
       width = timetableViewPortLeft,
       positionInItemProvider = _items.size,
       content = {

@@ -1,7 +1,9 @@
 package io.moyuru.lazytimetable
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.layout.LazyLayout
 import androidx.compose.runtime.Composable
@@ -17,6 +19,7 @@ import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import io.moyuru.lazytimetable.columnheader.LazyColumnHeader
 import kotlinx.coroutines.launch
 
 /**
@@ -104,53 +107,53 @@ fun LazyTimetable(
       horizontalSpacing = horizontalSpacing,
       contentPadding = contentPadding,
       baseEpochSec = baseEpochSec,
-      columnHeaderColor = columnHeaderColor,
       timeColumnColor = timeColumnColor,
     )
   }
   content(scope)
   scope.background()
   scope.timeLabel(timeLabel)
-  val itemProvider = remember(
-    horizontalSpacing,
-    contentPadding,
-    columnWidth,
-    heightPerMinute,
-    columnHeaderHeight,
-  ) {
-    LazyTimetableItemProvider(scope)
-  }
   val coroutineScope = rememberCoroutineScope()
-
-  LazyLayout(
-    itemProvider = { itemProvider },
-    measurePolicy = rememberMeasurementPolicy(timetableState, scope),
-    modifier = modifier
-      .clipToBounds()
-      .pointerInput(Unit) {
-        val velocityTracker = VelocityTracker()
-        detectDragGestures(
-          onDragStart = { offset ->
-            velocityTracker.resetTracking()
-            coroutineScope.launch { timetableState.stopFling() }
-          },
-          onDrag = { change, dragAmount ->
-            velocityTracker.addPosition(change.uptimeMillis, change.position)
-            timetableState.scroll(dragAmount.x, dragAmount.y)
-            change.consume()
-          },
-          onDragCancel = {
-            velocityTracker.resetTracking()
-          },
-          onDragEnd = {
-            val velocity = velocityTracker.calculateVelocity()
-            coroutineScope.launch {
-              timetableState.fling(velocity.x, velocity.y)
+  Column(
+    modifier = modifier,
+  ) {
+    LazyColumnHeader(
+      timetableState,
+      scope,
+      modifier = Modifier
+        .background(columnHeaderColor)
+    )
+    LazyLayout(
+      itemProvider = { LazyTimetableItemProvider(scope) },
+      measurePolicy = lazyTimetableMeasurementPolicy(timetableState, scope),
+      modifier = Modifier
+        .weight(1f)
+        .clipToBounds()
+        .pointerInput(Unit) {
+          val velocityTracker = VelocityTracker()
+          detectDragGestures(
+            onDragStart = { offset ->
+              velocityTracker.resetTracking()
+              coroutineScope.launch { timetableState.stopFling() }
+            },
+            onDrag = { change, dragAmount ->
+              velocityTracker.addPosition(change.uptimeMillis, change.position)
+              timetableState.scroll(dragAmount.x, dragAmount.y)
+              change.consume()
+            },
+            onDragCancel = {
+              velocityTracker.resetTracking()
+            },
+            onDragEnd = {
+              val velocity = velocityTracker.calculateVelocity()
+              coroutineScope.launch {
+                timetableState.fling(velocity.x, velocity.y)
+              }
+              velocityTracker.resetTracking()
             }
-            velocityTracker.resetTracking()
-          }
-        )
-      },
-  )
+          )
+        },
+    )
+  }
 }
 
