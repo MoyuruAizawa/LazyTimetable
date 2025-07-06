@@ -18,15 +18,6 @@ interface LazyTimetableScope {
     header: @Composable () -> Unit,
     columnContent: LazyTimetableColumnScope.() -> Unit,
   )
-
-  /**
-   * Adds time labels to the timetable.
-   *
-   * @param timeLabel The composable function to display time labels. The parameter is the time in epoch seconds.
-   */
-  fun timeLabel(
-    timeLabel: @Composable (epochSec: Long) -> Unit,
-  )
 }
 
 /**
@@ -157,7 +148,7 @@ internal class LazyTimetableScopeImpl(
     _columns.add(column)
   }
 
-  override fun timeLabel(timeLabel: @Composable ((Long) -> Unit)) {
+  internal fun timeLabel(timeLabel: @Composable ((Long) -> Unit)) {
     val allPeriods = columns.flatMap { it }
     val start = allPeriods.minBy { it.startAtSec }.startAtSec
     val end = allPeriods.maxBy { it.endAtSec }.endAtSec
