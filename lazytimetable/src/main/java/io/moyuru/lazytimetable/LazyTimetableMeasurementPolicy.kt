@@ -10,9 +10,6 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.LayoutDirection
 import kotlin.math.max
 
-private const val TIME_COLUMN_BACKGROUND_Z = 2f
-private const val TIME_COLUMN_Z = TIME_COLUMN_BACKGROUND_Z + 1
-private const val TIMETABLE_Z = 1f
 
 /**
  * Creates a measurement policy for LazyTimetable that handles the layout and positioning
@@ -42,7 +39,7 @@ internal fun lazyTimetableMeasurementPolicy(
       val x = period.x + scrollXOffset
       val y = period.y + scrollYOffset
       when {
-        x + period.width < scope.timetableViewPortLeft -> break
+        x + period.width < 0 -> break
         x > constraints.maxWidth -> break
         y + period.height < 0 -> continue
         y > constraints.maxHeight -> break
@@ -51,7 +48,7 @@ internal fun lazyTimetableMeasurementPolicy(
         VisibleItem(
           x,
           y,
-          TIMETABLE_Z,
+          0f,
           period.columnNumber,
           measure(
             period.positionInItemProvider,
@@ -66,49 +63,6 @@ internal fun lazyTimetableMeasurementPolicy(
         )
       )
     }
-  }
-  for (timeLabel in scope.timeLabels) {
-    val y = timeLabel.y + scrollYOffset
-    when {
-      y + timeLabel.height < 0 -> continue
-      y > constraints.maxHeight -> break
-    }
-    visibleItems.add(
-      VisibleItem(
-        x = timeLabel.x,
-        y = y,
-        z = TIME_COLUMN_Z,
-        columnNumber = -1,
-        placeable = measure(
-          timeLabel.positionInItemProvider,
-          Constraints(
-            minWidth = timeLabel.width,
-            maxWidth = timeLabel.width,
-            minHeight = 0,
-            maxHeight = constraints.maxHeight,
-          )
-        ).first()
-      )
-    )
-  }
-  scope.timeColumnBackground?.let {
-    visibleItems.add(
-      VisibleItem(
-        it.x,
-        it.y,
-        TIME_COLUMN_BACKGROUND_Z,
-        -1,
-        measure(
-          it.positionInItemProvider,
-          Constraints(
-            minWidth = it.width,
-            maxWidth = it.width,
-            minHeight = constraints.maxHeight,
-            maxHeight = constraints.maxHeight,
-          )
-        ).first(),
-      )
-    )
   }
 
   val periods = visibleItems.filter { it.isPeriod }

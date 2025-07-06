@@ -1,11 +1,7 @@
 package io.moyuru.lazytimetable
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
@@ -77,7 +73,6 @@ class LazyTimetableColumnScopeImpl(
  * @param heightPerMinute Height per minute for time-based positioning in Dp.
  * @param timeColumnWidth Width of the time column in Dp.
  * @param horizontalSpacing Horizontal spacing between columns in Dp.
- * @param timeColumnColor Background color for the time column.
  * @param baseEpochSec Base time in epoch seconds for calculating relative positions.
  * @param contentPadding Padding around the timetable content.
  */
@@ -88,7 +83,6 @@ internal class LazyTimetableScopeImpl(
   columnHeaderHeight: Dp,
   timeColumnWidth: Dp,
   horizontalSpacing: Dp,
-  private val timeColumnColor: Brush,
   private val baseEpochSec: Long,
   internal val contentPadding: PaddingValues,
 ) : LazyTimetableScope, Density by density {
@@ -100,8 +94,6 @@ internal class LazyTimetableScopeImpl(
   internal val timeLabels: List<TimeLabel> = _timeLabels
   private val _columns = ArrayList<List<Period>>()
   internal val columns: List<List<Period>> = _columns
-  internal var timeColumnBackground: TimeColumnBackground? = null
-    private set
   internal val columnCount get() = columns.size
 
   private val columnWidthPx = columnWidth.roundToPx()
@@ -111,22 +103,19 @@ internal class LazyTimetableScopeImpl(
 
   private val horizontalSpacingPx = horizontalSpacing.roundToPx()
 
-  internal val timetableViewPortLeft = contentPadding.calculateLeftPadding(LayoutDirection.Ltr).roundToPx() +
-      timeColumnWidthPx
-
   /**
    * Estimates the position and size of a column header.
    */
   private fun estimateColumnHeader(
     columnNumber: Int,
-    timetableViewPortLeft: Int,
+    timeColumnWidth: Int,
     paddingTop: Int,
     content: @Composable () -> Unit,
   ): ColumnHeader {
     return ColumnHeader(
       width = columnWidthPx,
       height = columnHeaderHeightPx,
-      x = timetableViewPortLeft +
+      x = timeColumnWidth +
           columnWidthPx * columnNumber +
           horizontalSpacingPx * columnNumber,
       y = paddingTop,
@@ -152,8 +141,7 @@ internal class LazyTimetableScopeImpl(
       endAtSec = startAt + durationSec,
       width = columnWidthPx,
       height = (durationSec / 60) * heightPerMinutePx,
-      x = timetableViewPortLeft +
-          columnWidthPx * columnNumber +
+      x = columnWidthPx * columnNumber +
           horizontalSpacingPx * columnNumber,
       y = previousBottom,
       content = content,
@@ -167,7 +155,7 @@ internal class LazyTimetableScopeImpl(
     val columnNumber = columns.size
     val columnHeader = estimateColumnHeader(
       columnNumber,
-      timetableViewPortLeft,
+      contentPadding.calculateLeftPadding(LayoutDirection.Ltr).roundToPx() + timeColumnWidthPx,
       contentPadding.calculateTopPadding().roundToPx(),
       header,
     )
@@ -200,37 +188,15 @@ internal class LazyTimetableScopeImpl(
       if (next < end) next else null
     }.forEach {
       val measuredTimeLabel = TimeLabel(
-        _items.size,
+        _timeLabels.size,
         timeColumnWidthPx,
         60 * heightPerMinutePx,
         paddingLeft,
         (it - baseEpochSec).toInt() / 60 * heightPerMinutePx,
         { timeLabel(it) },
       )
-      _items.add(measuredTimeLabel)
       _timeLabels.add(measuredTimeLabel)
     }
-  }
-
-  /**
-   * Creates background elements for the column header and time column.
-   */
-  internal fun background() {
-    val timeColumnBackground = TimeColumnBackground(
-      x = 0,
-      y = 0,
-      width = timetableViewPortLeft,
-      positionInItemProvider = _items.size,
-      content = {
-        Spacer(
-          Modifier
-            .fillMaxSize()
-            .background(timeColumnColor)
-        )
-      }
-    )
-    _items.add(timeColumnBackground)
-    this.timeColumnBackground = timeColumnBackground
   }
 }
 
