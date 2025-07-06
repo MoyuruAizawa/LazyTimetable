@@ -1,4 +1,5 @@
 # LazyTimetable
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/MoyuruAizawa/LazyTimetable)
 
 A high-performance, lazy-loading timetable composable for Android Jetpack Compose.  
 Perfect for creating festival schedules, conference schedules, and any time-based multi-column layouts.
