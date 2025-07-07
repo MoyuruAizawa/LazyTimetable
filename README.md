@@ -27,7 +27,7 @@ LazyTimetable(
   contentPadding = contentPaddings,
   horizontalSpacing = 4.dp,
   columnWidth = 120.dp,
-  // his value is used to determine how much height to allocate for the period on the Timetable.
+  // This value is used to determine how much height to allocate for the period on the Timetable.
   heightPerMinute = 1.5.dp,
   columnHeaderHeight = 80.dp,
   columnHeaderColor = Color.White,
