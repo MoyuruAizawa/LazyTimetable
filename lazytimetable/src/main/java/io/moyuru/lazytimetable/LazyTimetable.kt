@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 /**
  * A composable that creates a lazy-loaded, scrollable timetable layout.
  *
- * @param timetableState State object that provides scroll state information
+ * @param state State object that provides scroll state information
  * @param horizontalSpacing Horizontal spacing between columns
  * @param contentPadding Padding around the entire content area
  * @param columnWidth Width of each column in the timetable
@@ -45,7 +45,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun LazyTimetable(
   modifier: Modifier = Modifier,
-  timetableState: LazyTimetableState = rememberLazyTimetableState(),
+  state: LazyTimetableState = rememberLazyTimetableState(),
   horizontalSpacing: Dp = 0.dp,
   contentPadding: PaddingValues = PaddingValues(),
   columnWidth: Dp,
@@ -60,7 +60,7 @@ fun LazyTimetable(
 ) {
   LazyTimetable(
     modifier,
-    timetableState,
+    state,
     horizontalSpacing,
     contentPadding,
     columnWidth,
