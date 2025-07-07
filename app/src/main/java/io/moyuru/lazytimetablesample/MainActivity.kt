@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import io.moyuru.lazytimetable.LazyTimetable
 import io.moyuru.lazytimetable.columns
 import io.moyuru.lazytimetable.items
+import io.moyuru.lazytimetablesample.ui.theme.Colors
 import io.moyuru.lazytimetablesample.ui.theme.LazyTimetableSampleTheme
 import java.time.Instant
 import java.time.ZoneId
@@ -51,9 +52,7 @@ fun Timetable(contentPaddings: PaddingValues) {
     columnWidth = 120.dp,
     heightPerMinute = 1.5.dp,
     columnHeaderHeight = 80.dp,
-    columnHeaderColor = Brush.horizontalGradient(
-      listOf(Color(0xFF72113A), Color(0xFFB62958))
-    ),
+    columnHeaderColor = Brush.horizontalGradient(listOf(Colors.TML_PRIMARY, Colors.TML_ACCENT)),
     timeColumnWidth = 100.dp,
     timeColumnColor = SolidColor(Color.Black),
     baseEpochSec = tomorrowland.startAt,
