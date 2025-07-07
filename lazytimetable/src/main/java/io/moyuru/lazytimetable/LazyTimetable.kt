@@ -94,12 +94,13 @@ fun LazyTimetable(
 ) {
   val density = LocalDensity.current
   val scope = remember(
-    horizontalSpacing,
-    contentPadding,
+    content,
     columnWidth,
     heightPerMinute,
     columnHeaderHeight,
     timeColumnWidth,
+    horizontalSpacing,
+    baseEpochSec,
   ) {
     LazyTimetableScopeImpl(
       density = density,
