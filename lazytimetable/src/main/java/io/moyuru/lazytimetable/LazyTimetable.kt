@@ -1,15 +1,22 @@
 package io.moyuru.lazytimetable
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.layout.LazyLayout
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
@@ -18,12 +25,17 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import io.moyuru.lazytimetable.columnheader.LazyColumnHeader
 import io.moyuru.lazytimetable.timecolumn.LazyTimeColumn
 import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 /**
  * A composable that creates a lazy-loaded, scrollable timetable layout.
@@ -172,3 +184,73 @@ fun LazyTimetable(
   }
 }
 
+@SuppressLint("NewApi")
+@Preview
+@Composable
+private fun PreviewLazyTimetable() {
+  LazyTimetable(
+    horizontalSpacing = 4.dp,
+    columnWidth = 100.dp,
+    heightPerMinute = 3.dp,
+    columnHeaderHeight = 80.dp,
+    columnHeaderColor = Color.Black,
+    timeColumnWidth = 100.dp,
+    timeColumnColor = Color.Black,
+    baseEpochSec = 1767225600,
+    timeLabel = {
+      val text = remember(it) {
+        Instant.ofEpochSecond(it)
+          .atZone(ZoneId.of("UTC"))
+          .format(DateTimeFormatter.ofPattern("HH:mm"))
+      }
+      Text(
+        text,
+        color = Color.White,
+        textAlign = TextAlign.Center,
+      )
+    },
+    modifier = Modifier
+      .fillMaxSize()
+      .background(Color.Black),
+  ) {
+
+    listOf(
+      listOf("Nicky Romero", "EMPTY", "Alesso", "Steve Aoki", "Afrojack", "David Guetta"),
+      listOf("Julian Jordan", "Third Party", "EMPTY", "Matisse & Sadko", "DubVision", "Martin Garrix"),
+      listOf("Fairlane", "Virtual Riot", "Crankdat", "EMPTY", "Skrillex", "DJ Snake"),
+      listOf("R3HAB", "W&W", "KSHMR", "Steve Aoki", "EMPTY", "Dimitri Vegas & Like Mike"),
+      listOf("CRUNKZ", "Justin Mylo", "Brooks", "Mesto", "Mike Williams", "EMPTY"),
+      listOf("Blasterjaxx", "Dyro", "KAAZE", "Maddix", "EMPTY", "Hardwell", "EMPTY"),
+    )
+      .forEachIndexed { i, djList ->
+        column(
+          header = {
+            Box(contentAlignment = Alignment.Center) {
+              Text(
+                "Stage $i",
+                color = Color.White
+              )
+            }
+          }
+        ) {
+          djList.forEachIndexed { j, dj ->
+            item(durationSec = if (dj == "EMPTY") 60 * 10 else 60 * 60) {
+              if (dj == "EMPTY") {
+                Spacer(Modifier)
+              } else {
+                Box(
+                  contentAlignment = Alignment.Center,
+                  modifier = Modifier
+                    .padding(bottom = 4.dp)
+                    .background(Color.White)
+                    .padding(8.dp)
+                ) {
+                  Text(text = dj)
+                }
+              }
+            }
+          }
+        }
+      }
+  }
+}
