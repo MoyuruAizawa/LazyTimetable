@@ -1,6 +1,9 @@
 # LazyTimetable
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/MoyuruAizawa/LazyTimetable)
-
+[![JitPack](https://jitpack.io/v/MoyuruAizawa/LazyTimetable.svg)](https://jitpack.io/#MoyuruAizawa/LazyTimetable)
+[![Lint](https://github.com/MoyuruAizawa/LazyTimetable/actions/workflows/lint.yml/badge.svg)](https://github.com/MoyuruAizawa/LazyTimetable/actions/workflows/lint.yml)
+[![Vital Check](https://github.com/MoyuruAizawa/LazyTimetable/actions/workflows/vital_check.yml/badge.svg)](https://github.com/MoyuruAizawa/LazyTimetable/actions/workflows/vital_check.yml)
+  
 A high-performance, lazy-loading timetable composable for Android Jetpack Compose.  
 Perfect for creating festival schedules, conference schedules, and any time-based multi-column layouts.
 
@@ -15,8 +18,23 @@ https://github.com/user-attachments/assets/8a197485-cfd5-487e-982d-6cffea6137d3
 - **🔧 Type-safe DSL**: Clean, declarative API for defining timetable structure
 
 ## 🛠️ Installation
+Add it in your settings.gradle.kts at the end of repositories if you haven't added JitPack Repo yet.
+```kotlin
+dependencyResolutionManagement {
+  repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+  repositories {
+    mavenCentral()
+    maven { url = uri("https://jitpack.io") }
+  }
+}
+```
 
-TBD
+Add the dependency in your app/build.gradle.kt
+```kotlin
+dependencies {
+  implementation("com.github.MoyuruAizawa:LazyTimetable:${version}")
+}
+```
 
 ## 🚀 Quick Start
 
