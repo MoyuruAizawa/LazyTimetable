@@ -68,7 +68,7 @@ fun LazyTimetable(
   timeColumnColor: Color,
   baseEpochSec: Long,
   timeLabel: @Composable (Long) -> Unit,
-  content: LazyTimetableScope.() -> Unit
+  content: LazyTimetableScope.() -> Unit,
 ) {
   LazyTimetable(
     modifier,
@@ -102,7 +102,7 @@ fun LazyTimetable(
   timeColumnColor: Brush,
   baseEpochSec: Long,
   timeLabel: @Composable (Long) -> Unit,
-  content: LazyTimetableScope.() -> Unit
+  content: LazyTimetableScope.() -> Unit,
 ) {
   val density = LocalDensity.current
   val scope = remember(
@@ -137,17 +137,17 @@ fun LazyTimetable(
       timetableState,
       scope,
       modifier = Modifier
-        .background(columnHeaderColor)
+        .background(columnHeaderColor),
     )
     Row(
-      modifier = Modifier.weight(1f)
+      modifier = Modifier.weight(1f),
     ) {
       LazyTimeColumn(
         contentPadding.calculateLeftPadding(LayoutDirection.Ltr),
         timetableState,
         scope,
         modifier = Modifier
-          .background(timeColumnColor)
+          .background(timeColumnColor),
       )
       LazyLayout(
         itemProvider = { LazyTimetableItemProvider(scope) },
@@ -177,7 +177,7 @@ fun LazyTimetable(
                   timetableState.fling(velocity.x, velocity.y)
                 }
                 velocityTracker.resetTracking()
-              }
+              },
             )
           },
       )
@@ -200,7 +200,8 @@ private fun PreviewLazyTimetable() {
     baseEpochSec = 1767225600,
     timeLabel = {
       val text = remember(it) {
-        Instant.ofEpochSecond(it)
+        Instant
+          .ofEpochSecond(it)
           .atZone(ZoneId.of("UTC"))
           .format(DateTimeFormatter.ofPattern("HH:mm"))
       }
@@ -222,36 +223,35 @@ private fun PreviewLazyTimetable() {
       listOf("R3HAB", "W&W", "KSHMR", "Steve Aoki", "EMPTY", "Dimitri Vegas & Like Mike"),
       listOf("CRUNKZ", "Justin Mylo", "Brooks", "Mesto", "Mike Williams", "EMPTY"),
       listOf("Blasterjaxx", "Dyro", "KAAZE", "Maddix", "EMPTY", "Hardwell", "EMPTY"),
-    )
-      .forEachIndexed { i, djList ->
-        column(
-          header = {
-            Box(contentAlignment = Alignment.Center) {
-              Text(
-                "Stage $i",
-                color = Color.White
-              )
-            }
+    ).forEachIndexed { i, djList ->
+      column(
+        header = {
+          Box(contentAlignment = Alignment.Center) {
+            Text(
+              "Stage $i",
+              color = Color.White,
+            )
           }
-        ) {
-          djList.forEachIndexed { j, dj ->
-            item(durationSec = if (dj == "EMPTY") 60 * 10 else 60 * 60) {
-              if (dj == "EMPTY") {
-                Spacer(Modifier)
-              } else {
-                Box(
-                  contentAlignment = Alignment.Center,
-                  modifier = Modifier
-                    .padding(bottom = 4.dp)
-                    .background(Color.White)
-                    .padding(8.dp)
-                ) {
-                  Text(text = dj)
-                }
+        },
+      ) {
+        djList.forEachIndexed { j, dj ->
+          item(durationSec = if (dj == "EMPTY") 60 * 10 else 60 * 60) {
+            if (dj == "EMPTY") {
+              Spacer(Modifier)
+            } else {
+              Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                  .padding(bottom = 4.dp)
+                  .background(Color.White)
+                  .padding(8.dp),
+              ) {
+                Text(text = dj)
               }
             }
           }
         }
       }
+    }
   }
 }

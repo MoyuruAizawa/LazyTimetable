@@ -40,9 +40,9 @@ internal fun lazyTimeColumnMeasurementPolicy(
             maxWidth = timeLabel.width,
             minHeight = 0,
             maxHeight = constraints.maxHeight,
-          )
-        ).first()
-      )
+          ),
+        ).first(),
+      ),
     )
   }
   layout(visibleItems.maxOf { it.placeable.width }, constraints.maxHeight) {

@@ -23,7 +23,7 @@ interface LazyTimetableScope {
 fun <C> LazyTimetableScope.columns(
   columns: List<C>,
   header: @Composable (C) -> Unit,
-  columnContent: LazyTimetableColumnScope.(C) -> Unit
+  columnContent: LazyTimetableColumnScope.(C) -> Unit,
 ) {
   columns.forEach {
     column(
@@ -45,7 +45,7 @@ interface LazyTimetableColumnScope {
    */
   fun item(
     durationSec: Int,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
   )
 }
 
@@ -67,7 +67,7 @@ class LazyTimetableColumnScopeImpl(
 ) : LazyTimetableColumnScope {
   override fun item(
     durationSec: Int,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
   ) {
     accumulator(durationSec, content)
   }
@@ -92,7 +92,8 @@ internal class LazyTimetableScopeImpl(
   timeColumnWidth: Dp,
   horizontalSpacing: Dp,
   private val baseEpochSec: Long,
-) : LazyTimetableScope, Density by density {
+) : LazyTimetableScope,
+  Density by density {
   private val _items = mutableListOf<VirtualMeasuredItem>()
   internal val items: List<VirtualMeasuredItem> = _items
   private val _columnHeaders = ArrayList<ColumnHeader>()
@@ -130,7 +131,7 @@ internal class LazyTimetableScopeImpl(
       width = columnWidthPx,
       height = (durationSec / 60) * heightPerMinutePx,
       x = columnWidthPx * columnNumber +
-          horizontalSpacingPx * columnNumber,
+        horizontalSpacingPx * columnNumber,
       y = previousBottom,
       content = content,
     )
@@ -145,7 +146,7 @@ internal class LazyTimetableScopeImpl(
       width = columnWidthPx,
       height = columnHeaderHeightPx,
       x = columnWidthPx * columnNumber +
-          horizontalSpacingPx * columnNumber,
+        horizontalSpacingPx * columnNumber,
       y = 0,
       content = header,
     )
@@ -164,7 +165,7 @@ internal class LazyTimetableScopeImpl(
         )
         _items.add(period)
         column.add(period)
-      }
+      },
     )
     _columns.add(column)
   }
@@ -188,4 +189,3 @@ internal class LazyTimetableScopeImpl(
     }
   }
 }
-

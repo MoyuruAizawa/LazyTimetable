@@ -63,11 +63,11 @@ fun Timetable(contentPaddings: PaddingValues) {
   ) {
     columns(
       tomorrowland.stages,
-      header = { Header(it) }
+      header = { Header(it) },
     ) { stage ->
       items(
         stage.periods,
-        durationSec = { period -> period.durationSec }
+        durationSec = { period -> period.durationSec },
       ) { period ->
         when (period) {
           is Period.Empty -> Spacer(Modifier)
@@ -114,14 +114,15 @@ fun Header(stage: Stage, modifier: Modifier = Modifier) {
 fun TimeLabel(epochSec: Long, modifier: Modifier = Modifier) {
   Box(contentAlignment = Alignment.TopCenter, modifier = modifier) {
     val label = remember(epochSec) {
-      Instant.ofEpochSecond(epochSec)
+      Instant
+        .ofEpochSecond(epochSec)
         .atZone(ZoneId.of("Europe/Brussels"))
         .format(DateTimeFormatter.ofPattern("HH:mm"))
     }
     Text(
       text = label,
       style = MaterialTheme.typography.labelMedium,
-      color = Color(0xFFA0AEC0)
+      color = Color(0xFFA0AEC0),
     )
   }
 }

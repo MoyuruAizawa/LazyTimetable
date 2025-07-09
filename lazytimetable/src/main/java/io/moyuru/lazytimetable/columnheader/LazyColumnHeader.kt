@@ -17,11 +17,11 @@ internal fun LazyColumnHeader(
   contentPadding: PaddingValues,
   state: LazyTimetableState,
   scope: LazyTimetableScopeImpl,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
 ) {
   LazyLayout(
     itemProvider = { LazyColumnHeaderItemProvider(scope) },
     modifier = modifier.clipToBounds(),
-    measurePolicy = lazyColumnHeaderMeasurementPolicy(timeColumnWidth, contentPadding, state, scope)
+    measurePolicy = lazyColumnHeaderMeasurementPolicy(timeColumnWidth, contentPadding, state, scope),
   )
 }
