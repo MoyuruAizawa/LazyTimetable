@@ -9,7 +9,6 @@ import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.LayoutDirection
 
-
 /**
  * Creates a measurement policy for LazyTimetable that handles the layout and positioning
  * of timetable items, column headers, time labels, and backgrounds.
@@ -57,9 +56,9 @@ internal fun lazyTimetableMeasurementPolicy(
               maxWidth = period.width,
               minHeight = period.height,
               maxHeight = period.height,
-            )
+            ),
           ).first(),
-        )
+        ),
       )
     }
   }
@@ -69,12 +68,12 @@ internal fun lazyTimetableMeasurementPolicy(
   state.scrollHorizontalMin =
     scope.columns.lastOrNull()?.firstOrNull()?.let {
       constraints.maxWidth -
-          (it.x + it.width) -
-          contentPadding.calculateRightPadding(LayoutDirection.Ltr).roundToPx()
+        (it.x + it.width) -
+        contentPadding.calculateRightPadding(LayoutDirection.Ltr).roundToPx()
     } ?: 0
   state.scrollVerticalMin = constraints.maxHeight -
-      scope.columns.maxOf { it.lastOrNull()?.bottom ?: 0 } -
-      contentPadding.calculateBottomPadding().roundToPx()
+    scope.columns.maxOf { it.lastOrNull()?.bottom ?: 0 } -
+    contentPadding.calculateBottomPadding().roundToPx()
 
   layout(constraints.maxWidth, constraints.maxHeight) {
     visibleItems.forEach {

@@ -1,0 +1,36 @@
+name: Lint
+on: pull_request
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-read-only: false
+
+      - uses: reviewdog/action-setup@v1
+        with:
+          reviewdog_version: latest
+
+      - name: Run Lint
+        run: ./gradlew --continue ktlintCheck
+
+      - name: Run Reviewdog
+        if: always()
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          find . -regex '^.*/build/reports/ktlint/.*\.xml' -type f | while read file_path; do
+            echo "Processing $file_path"
+            reviewdog -f=checkstyle -reporter=github-pr-review -fail-on-error=true < "$file_path"
+          done

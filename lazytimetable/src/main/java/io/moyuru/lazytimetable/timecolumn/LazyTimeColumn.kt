@@ -15,11 +15,11 @@ internal fun LazyTimeColumn(
   paddingLeft: Dp,
   state: LazyTimetableState,
   scope: LazyTimetableScopeImpl,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
 ) {
   LazyLayout(
     itemProvider = { LazyTimeColumnItemProvider(scope) },
     modifier = modifier.clipToBounds(),
-    measurePolicy = lazyTimeColumnMeasurementPolicy(paddingLeft, state, scope)
+    measurePolicy = lazyTimeColumnMeasurementPolicy(paddingLeft, state, scope),
   )
 }

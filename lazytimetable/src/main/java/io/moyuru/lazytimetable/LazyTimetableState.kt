@@ -17,7 +17,7 @@ import kotlin.math.exp
 
 @Composable
 fun rememberLazyTimetableState() = rememberSaveable(
-  saver = LazyTimetableState.SAVER
+  saver = LazyTimetableState.SAVER,
 ) {
   LazyTimetableState()
 }
@@ -39,10 +39,9 @@ class LazyTimetableState internal constructor() {
   private var flingJobX: Job? = null
   private var flingJobY: Job? = null
 
-  internal fun canScroll(deltaX: Float, deltaY: Float): Boolean {
-    return (scrollHorizontalMax > scrollXOffset + deltaX && scrollXOffset + deltaX < scrollHorizontalMin) ||
-        (scrollVerticalMax > scrollYOffset + deltaY && scrollYOffset + deltaY < scrollVerticalMin)
-  }
+  internal fun canScroll(deltaX: Float, deltaY: Float): Boolean =
+    (scrollHorizontalMax > scrollXOffset + deltaX && scrollXOffset + deltaX < scrollHorizontalMin) ||
+      (scrollVerticalMax > scrollYOffset + deltaY && scrollYOffset + deltaY < scrollVerticalMin)
 
   internal fun scroll(deltaX: Float, deltaY: Float) {
     scrollXOffset = (scrollXOffset + deltaX.toInt())
@@ -61,9 +60,10 @@ class LazyTimetableState internal constructor() {
       flingJobX = async {
         animateExponentialDecay(
           initialValue = scrollXOffset.toFloat(),
-          initialVelocity = velocityX
+          initialVelocity = velocityX,
         ) { value ->
-          scrollXOffset = value.toInt()
+          scrollXOffset = value
+            .toInt()
             .coerceAtMost(scrollHorizontalMax)
             .coerceAtLeast(scrollHorizontalMin)
         }
@@ -72,9 +72,10 @@ class LazyTimetableState internal constructor() {
       flingJobY = async {
         animateExponentialDecay(
           initialValue = scrollYOffset.toFloat(),
-          initialVelocity = velocityY
+          initialVelocity = velocityY,
         ) { value ->
-          scrollYOffset = value.toInt()
+          scrollYOffset = value
+            .toInt()
             .coerceAtMost(scrollVerticalMax)
             .coerceAtLeast(scrollVerticalMin)
         }
@@ -95,7 +96,7 @@ class LazyTimetableState internal constructor() {
   private suspend fun animateExponentialDecay(
     initialValue: Float,
     initialVelocity: Float,
-    onUpdate: (Float) -> Unit
+    onUpdate: (Float) -> Unit,
   ) {
     val decayConstant = -4.2f
     val threshold = 0.1f
@@ -130,7 +131,7 @@ class LazyTimetableState internal constructor() {
           firstVisibleColumnNumber = it[2]
           lastVisibleColumnNumber = it[3]
         }
-      }
+      },
     )
   }
 }

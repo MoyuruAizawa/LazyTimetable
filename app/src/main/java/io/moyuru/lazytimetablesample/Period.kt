@@ -41,9 +41,8 @@ private val stages = listOf(
       Period.Show("Alok", 3900, 0), // 21:45 - 22:45 (1 hour)
       Period.Show("Axwell", 3900, 0), // 22:50 - 23:50 (1 hour)
       Period.Show("Martin Garrix", 4200, 0), // 23:50 - 00:50 (1 hour)
-    )
+    ),
   ),
-
   Stage(
     title = "FREEDOM BY BUD",
     periods = listOf(
@@ -55,9 +54,8 @@ private val stages = listOf(
       Period.Show("HI-LO B2B Eli Brown", 5400, 1), // 20:00 - 21:30 (1.5 hours)
       Period.Show("John Summit", 5400, 1), // 21:30 - 23:00 (1.5 hours)
       Period.Show("Eric Prydz", 1800, 1), // 23:00 - 00:30 (1.5 hours)
-    )
+    ),
   ),
-
   Stage(
     title = "THE ROSE GARDEN",
     periods = listOf(
@@ -73,9 +71,8 @@ private val stages = listOf(
       Period.Show("Andromedik", 3600, 2), // 21:00 - 22:00 (1 hour)
       Period.Show("Sota b2b Basstripper", 3600, 2), // 22:00 - 23:00 (1 hour)
       Period.Show("Camo & Krooked", 3600, 2), // 23:00 - 00:00 (1 hour)
-    )
+    ),
   ),
-
   Stage(
     title = "ELIXIR",
     periods = listOf(
@@ -90,9 +87,8 @@ private val stages = listOf(
       Period.Show("Flo Windey ft.Skyve", 3600, 3), // 21:00 - 22:00 (1 hour)
       Period.Show("Double D", 5400, 3), // 22:00 - 23:30 (1.5 hours)
       Period.Show("C-Track", 1800, 3), // 23:30 - 01:00 (1.5 hours)
-    )
+    ),
   ),
-
   Stage(
     title = "CAGE",
     periods = listOf(
@@ -107,9 +103,8 @@ private val stages = listOf(
       Period.Show("Dr Donk", 3600, 4), // 20:00 - 21:00 (1 hour)
       Period.Show("The Dark Horror", 3600, 4), // 21:00 - 22:00 (1 hour)
       Period.Show("Unicorn On K", 3600, 4), // 22:00 - 23:00 (1 hour)
-    )
+    ),
   ),
-
   Stage(
     title = "THE RAVE CAVE",
     periods = listOf(
@@ -122,9 +117,8 @@ private val stages = listOf(
       Period.Empty(3600, 5), // 21:00 - 22:00 (1 hour)
       Period.Show("The Rocketman", 3600, 5), // 22:00 - 23:00 (1 hour)
       Period.Show("Luca v/d Hombergh", 3600, 5), // 23:00 - 00:00 (1 hour)
-    )
+    ),
   ),
-
   Stage(
     title = "PLANAXIS",
     periods = listOf(
@@ -135,9 +129,8 @@ private val stages = listOf(
       Period.Show("Brina Knauss", 5400, 6), // 18:00 - 19:30 (1.5 hours)
       Period.Show("Innellea", 5400, 6), // 19:30 - 21:00 (1.5 hours)
       Period.Show("Stephan Bodzin (live)", 7200, 6), // 21:00 - 23:00 (2 hours)
-    )
+    ),
   ),
-
   Stage(
     title = "RISE BY COCA-COLA",
     periods = listOf(
@@ -151,9 +144,8 @@ private val stages = listOf(
       Period.Show("Disco Dasco", 5400, 7), // 19:30 - 21:00 (1.5 hours)
       Period.Show("Christophe & Seelen", 3600, 7), // 21:00 - 22:00 (1 hour)
       Period.Show("Yves Deruyter", 3600, 7), // 22:00 - 23:00 (1 hour)
-    )
+    ),
   ),
-
   Stage(
     title = "ATMOSPHERE",
     periods = listOf(
@@ -166,9 +158,8 @@ private val stages = listOf(
       Period.Show("Azyir b2b Nico Moreno", 7200, 8), // 21:00 - 23:00 (2 hours)
       Period.Show("Holy Priest", 3600, 8), // 23:00 - 00:00 (1 hour)
       Period.Show("Fantasm", 1980, 8), // 00:00 - 00:55 (0.92 hours)
-    )
+    ),
   ),
-
   Stage(
     title = "CORE",
     periods = listOf(
@@ -180,9 +171,8 @@ private val stages = listOf(
       Period.Show("Jennifer Cardini", 7200, 9), // 19:00 - 21:00 (2 hours)
       Period.Show("Bora Uzer", 7200, 9), // 21:00 - 23:00 (2 hours)
       Period.Show("Damian Lazarus", 3000, 9), // 23:00 - 00:50 (1.83 hours)
-    )
+    ),
   ),
-
   Stage(
     title = "CRYSTAL GARDEN",
     periods = listOf(
@@ -192,9 +182,8 @@ private val stages = listOf(
       Period.Show("Arodes b2b Shimza", 5400, 10), // 17:00 - 18:30 (1.5 hours)
       Period.Show("ANNA b2b Antdot", 7200, 10), // 18:30 - 20:30 (2 hours)
       Period.Show("Vintage Culture", 10800, 10), // 20:30 - 23:30 (3 hours)
-    )
+    ),
   ),
-
   Stage(
     title = "THE GREAT LIBRARY",
     periods = listOf(
@@ -210,9 +199,8 @@ private val stages = listOf(
       Period.Show("MANDY", 3600, 11), // 21:00 - 22:00 (1 hour)
       Period.Show("R3hab", 3600, 11), // 22:00 - 23:00 (1 hour)
       Period.Show("Hardwell", 3600, 11), // 23:00 - 00:00 (1 hour)
-    )
+    ),
   ),
-
   Stage(
     title = "MELODIA BY CORONA",
     periods = listOf(
@@ -224,9 +212,8 @@ private val stages = listOf(
       Period.Show("Joezi", 5400, 12), // 19:30 - 21:00 (1.5 hours)
       Period.Show("Aaron Sevilla", 5400, 12), // 21:00 - 22:30 (1.5 hours)
       Period.Show("Block & Crown", 5400, 12), // 22:30 - 00:00 (1.5 hours)
-    )
+    ),
   ),
-
   Stage(
     title = "HOUSE OF FORTUNE BY JBL",
     periods = listOf(
@@ -240,17 +227,16 @@ private val stages = listOf(
       Period.Show("Ely Oaks", 3600, 13), // 19:00 - 20:00 (1 hour)
       Period.Show("Jaden Bojsen", 3600, 13), // 20:00 - 21:00 (1 hour)
       Period.Show("Junkie Kid", 3600, 13), // 21:00 - 22:00 (1 hour)
-    )
+    ),
   ),
-
   Stage(
     title = "MOOSEBAR",
     periods = listOf(
       Period.Show("DJ Prosit", 14400, 14), // 12:00 - 16:00 (4 hours)
       Period.Show("Tom Cosyns", 10800, 14), // 16:00 - 19:00 (3 hours)
       Period.Show("Kurt Verheyen", 18000, 14), // 19:20 - 00:00 (4.67 hours)
-    )
-  )
+    ),
+  ),
 )
 
 val tomorrowland = Event(

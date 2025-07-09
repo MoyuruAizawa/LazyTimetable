@@ -46,9 +46,9 @@ internal fun lazyColumnHeaderMeasurementPolicy(
             maxWidth = columnHeader.width,
             minHeight = columnHeader.height,
             maxHeight = columnHeader.height,
-          )
-        ).first()
-      )
+          ),
+        ).first(),
+      ),
     )
   }
   layout(constraints.maxWidth, visibleItems.maxOf { it.placeable.height + it.y }) {
