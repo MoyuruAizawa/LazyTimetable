@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.layout.LazyLayout
-import androidx.compose.material3.Text
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -205,10 +206,12 @@ private fun PreviewLazyTimetable() {
           .atZone(ZoneId.of("UTC"))
           .format(DateTimeFormatter.ofPattern("HH:mm"))
       }
-      Text(
-        text,
-        color = Color.White,
-        textAlign = TextAlign.Center,
+      BasicText(
+        text = text,
+        style = TextStyle(
+          color = Color.White,
+          textAlign = TextAlign.Center,
+        )
       )
     },
     modifier = Modifier
@@ -227,9 +230,11 @@ private fun PreviewLazyTimetable() {
       column(
         header = {
           Box(contentAlignment = Alignment.Center) {
-            Text(
-              "Stage $i",
-              color = Color.White,
+            BasicText(
+              text = "Stage $i",
+              style = TextStyle(
+                color = Color.White,
+              )
             )
           }
         },
@@ -246,7 +251,7 @@ private fun PreviewLazyTimetable() {
                   .background(Color.White)
                   .padding(8.dp),
               ) {
-                Text(text = dj)
+                BasicText(text = dj)
               }
             }
           }
