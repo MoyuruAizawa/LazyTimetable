@@ -211,7 +211,7 @@ private fun PreviewLazyTimetable() {
         style = TextStyle(
           color = Color.White,
           textAlign = TextAlign.Center,
-        )
+        ),
       )
     },
     modifier = Modifier
@@ -234,7 +234,7 @@ private fun PreviewLazyTimetable() {
               text = "Stage $i",
               style = TextStyle(
                 color = Color.White,
-              )
+              ),
             )
           }
         },
