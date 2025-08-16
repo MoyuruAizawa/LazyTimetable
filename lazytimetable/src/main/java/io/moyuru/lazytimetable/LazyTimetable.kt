@@ -3,7 +3,9 @@ package io.moyuru.lazytimetable
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.ScrollableDefaults
+import androidx.compose.foundation.gestures.rememberScrollable2DState
+import androidx.compose.foundation.gestures.scrollable2D
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,8 +24,6 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import io.moyuru.lazytimetable.columnheader.LazyColumnHeader
 import io.moyuru.lazytimetable.timecolumn.LazyTimeColumn
-import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -156,31 +155,12 @@ fun LazyTimetable(
         modifier = Modifier
           .weight(1f)
           .clipToBounds()
-          .pointerInput(Unit) {
-            val velocityTracker = VelocityTracker()
-            detectDragGestures(
-              onDragStart = { offset ->
-                velocityTracker.resetTracking()
-                coroutineScope.launch { state.stopFling() }
-              },
-              onDrag = { change, dragAmount ->
-                velocityTracker.addPosition(change.uptimeMillis, change.position)
-                if (state.canScroll(dragAmount.x, dragAmount.y))
-                  change.consume()
-                state.scroll(dragAmount.x, dragAmount.y)
-              },
-              onDragCancel = {
-                velocityTracker.resetTracking()
-              },
-              onDragEnd = {
-                val velocity = velocityTracker.calculateVelocity()
-                coroutineScope.launch {
-                  state.fling(velocity.x, velocity.y)
-                }
-                velocityTracker.resetTracking()
-              },
-            )
-          },
+          .scrollable2D(
+            state = rememberScrollable2DState { offset ->
+              state.scroll(offset.x, offset.y)
+            },
+            flingBehavior = ScrollableDefaults.flingBehavior(),
+          ),
       )
     }
   }
