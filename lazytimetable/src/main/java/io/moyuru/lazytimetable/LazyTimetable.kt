@@ -159,8 +159,8 @@ fun LazyTimetable(
             state = rememberScrollable2DState { offset ->
               state.scroll(offset.x, offset.y)
             },
-            flingBehavior = ScrollableDefaults.flingBehavior()
-          )
+            flingBehavior = ScrollableDefaults.flingBehavior(),
+          ),
       )
     }
   }
