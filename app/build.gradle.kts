@@ -1,18 +1,17 @@
 plugins {
   alias(libs.plugins.android.application)
-  alias(libs.plugins.kotlin.android)
   alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.ktlint.gradle)
 }
 
 android {
   namespace = "io.moyuru.lazytimetablesample"
-  compileSdk = 36
+  compileSdk = 37
 
   defaultConfig {
     applicationId = "io.moyuru.lazytimetablesample"
     minSdk = 29
-    targetSdk = 36
+    targetSdk = 37
     versionCode = 1
     versionName = "1.0"
 
@@ -29,9 +28,6 @@ android {
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
-  }
-  kotlinOptions {
-    jvmTarget = "11"
   }
   buildFeatures {
     compose = true
@@ -56,4 +52,10 @@ dependencies {
   androidTestImplementation(libs.androidx.ui.test.junit4)
   debugImplementation(libs.androidx.ui.tooling)
   debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+kotlin {
+  compilerOptions {
+    jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+  }
 }

@@ -25,7 +25,7 @@ fun <C> LazyTimetableScope.columns(
   header: @Composable (C) -> Unit,
   columnContent: LazyTimetableColumnScope.(C) -> Unit,
 ) {
-  columns.forEach {
+  for (it in columns) {
     column(
       header = { header(it) },
       columnContent = { columnContent(it) },
@@ -50,7 +50,7 @@ interface LazyTimetableColumnScope {
 }
 
 fun <I> LazyTimetableColumnScope.items(items: List<I>, durationSec: (I) -> Int, itemContent: @Composable (I) -> Unit) {
-  items.forEach {
+  for (it in items) {
     item(durationSec(it)) {
       itemContent(it)
     }

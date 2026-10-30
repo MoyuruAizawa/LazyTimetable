@@ -1,13 +1,12 @@
 plugins {
   alias(libs.plugins.android.library)
-  alias(libs.plugins.kotlin.android)
   alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.ktlint.gradle)
 }
 
 android {
   namespace = "io.moyuru.lazytimetable"
-  compileSdk = 36
+  compileSdk = 37
 
   defaultConfig {
     minSdk = 21
@@ -26,9 +25,6 @@ android {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
   }
-  kotlinOptions {
-    jvmTarget = "11"
-  }
   buildFeatures {
     compose = true
   }
@@ -43,4 +39,10 @@ dependencies {
   testImplementation(libs.junit)
   androidTestImplementation(libs.androidx.junit)
   androidTestImplementation(libs.androidx.espresso.core)
+}
+
+kotlin {
+  compilerOptions {
+    jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+  }
 }
