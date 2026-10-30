@@ -1,18 +1,17 @@
 plugins {
   alias(libs.plugins.android.application)
-  alias(libs.plugins.kotlin.android)
   alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.ktlint.gradle)
 }
 
 android {
   namespace = "io.moyuru.lazytimetablesample"
-  compileSdk = 36
+  compileSdk = 37
 
   defaultConfig {
     applicationId = "io.moyuru.lazytimetablesample"
     minSdk = 29
-    targetSdk = 36
+    targetSdk = 37
     versionCode = 1
     versionName = "1.0"
 

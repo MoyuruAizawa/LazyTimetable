@@ -1,13 +1,12 @@
 plugins {
   alias(libs.plugins.android.library)
-  alias(libs.plugins.kotlin.android)
   alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.ktlint.gradle)
 }
 
 android {
   namespace = "io.moyuru.lazytimetable"
-  compileSdk = 36
+  compileSdk = 37
 
   defaultConfig {
     minSdk = 21
