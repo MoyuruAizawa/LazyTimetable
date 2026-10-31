@@ -3,6 +3,7 @@ package io.moyuru.lazytimetable
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
+import kotlin.math.roundToInt
 
 /**
  * Receiver scope for [LazyTimetable] content.
@@ -105,7 +106,7 @@ internal class LazyTimetableScopeImpl(
   internal val columnCount get() = columns.size
 
   private val columnWidthPx = columnWidth.roundToPx()
-  private val heightPerMinutePx = heightPerMinute.roundToPx()
+  private val heightPerMinutePx = heightPerMinute.toPx()
   internal val columnHeaderHeightPx = columnHeaderHeight.roundToPx()
   internal val timeColumnWidthPx = timeColumnWidth.roundToPx()
 
@@ -115,6 +116,9 @@ internal class LazyTimetableScopeImpl(
     get() = if (columnCount == 0) 0 else (columnWidthPx + horizontalSpacingPx) * columnCount - horizontalSpacingPx
   internal val contentHeight: Int
     get() = columns.maxOfOrNull { it.lastOrNull()?.bottom ?: 0 } ?: 0
+
+  private fun yOf(epochSec: Long): Int =
+    ((epochSec - baseEpochSec) * heightPerMinutePx.toDouble() / 60).roundToInt()
 
   /**
    * Estimates the position and size of a period.
@@ -126,7 +130,6 @@ internal class LazyTimetableScopeImpl(
     durationSec: Int,
     content: @Composable () -> Unit,
   ): Period {
-    val previousBottom = previous?.bottom ?: 0
     val startAt = previous?.endAtSec ?: baseEpochSec
     return Period(
       columnNumber = columnNumber,
@@ -134,10 +137,10 @@ internal class LazyTimetableScopeImpl(
       startAtSec = startAt,
       endAtSec = startAt + durationSec,
       width = columnWidthPx,
-      height = (durationSec / 60) * heightPerMinutePx,
+      height = yOf(startAt + durationSec) - yOf(startAt),
       x = columnWidthPx * columnNumber +
         horizontalSpacingPx * columnNumber,
-      y = previousBottom,
+      y = yOf(startAt),
       content = content,
     )
   }
@@ -185,9 +188,9 @@ internal class LazyTimetableScopeImpl(
     }.forEach {
       val measuredTimeLabel = TimeLabel(
         timeColumnWidthPx,
-        60 * heightPerMinutePx,
+        yOf(it + 60 * 60) - yOf(it),
         0,
-        (it - baseEpochSec).toInt() / 60 * heightPerMinutePx,
+        yOf(it),
         { timeLabel(it) },
       )
       _timeLabels.add(measuredTimeLabel)
