@@ -16,8 +16,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.layout.LazyLayout
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.referentialEqualityPolicy
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -105,9 +108,10 @@ fun LazyTimetable(
   content: LazyTimetableScope.() -> Unit,
 ) {
   val density = LocalDensity.current
-  val scope = remember(
-    content,
-    timeLabel,
+  val latestContent = rememberUpdatedState(content)
+  val latestTimeLabel = rememberUpdatedState(timeLabel)
+  val scopeState = remember(
+    density,
     columnWidth,
     heightPerMinute,
     columnHeaderHeight,
@@ -115,18 +119,22 @@ fun LazyTimetable(
     horizontalSpacing,
     baseEpochSec,
   ) {
-    LazyTimetableScopeImpl(
-      density = density,
-      columnWidth = columnWidth,
-      heightPerMinute = heightPerMinute,
-      columnHeaderHeight = columnHeaderHeight,
-      timeColumnWidth = timeColumnWidth,
-      horizontalSpacing = horizontalSpacing,
-      baseEpochSec = baseEpochSec,
-    )
+    derivedStateOf(referentialEqualityPolicy()) {
+      LazyTimetableScopeImpl(
+        density = density,
+        columnWidth = columnWidth,
+        heightPerMinute = heightPerMinute,
+        columnHeaderHeight = columnHeaderHeight,
+        timeColumnWidth = timeColumnWidth,
+        horizontalSpacing = horizontalSpacing,
+        baseEpochSec = baseEpochSec,
+      ).apply {
+        latestContent.value(this)
+        timeLabel(latestTimeLabel.value)
+      }
+    }
   }
-  content(scope)
-  scope.timeLabel(timeLabel)
+  val scope = scopeState.value
   val coroutineScope = rememberCoroutineScope()
   Column(
     modifier = modifier,
