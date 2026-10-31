@@ -15,6 +15,7 @@ import io.moyuru.lazytimetable.VisibleItem
 @Composable
 internal fun lazyTimeColumnMeasurementPolicy(
   paddingLeft: Dp,
+  timeColumnWidth: Dp,
   state: LazyTimetableState,
   scope: LazyTimetableScopeImpl,
 ): LazyLayoutMeasureScope.(Constraints) -> MeasureResult = { constraints ->
@@ -46,7 +47,7 @@ internal fun lazyTimeColumnMeasurementPolicy(
       ),
     )
   }
-  val width = constraints.constrainWidth(visibleItems.maxOfOrNull { it.placeable.width } ?: scope.timeColumnWidthPx)
+  val width = constraints.constrainWidth(paddingLeftPx + timeColumnWidth.roundToPx())
   layout(width, constraints.maxHeight) {
     visibleItems.forEach {
       it.placeable.place(it.x, it.y, it.z)

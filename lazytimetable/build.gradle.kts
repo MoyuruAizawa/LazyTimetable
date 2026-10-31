@@ -15,6 +15,11 @@ android {
     consumerProguardFiles("consumer-rules.pro")
   }
 
+  testOptions {
+    unitTests.isIncludeAndroidResources = true
+    unitTests.all { it.jvmArgs("--add-exports=java.base/jdk.internal.access=ALL-UNNAMED") }
+  }
+
   buildTypes {
     release {
       isMinifyEnabled = false

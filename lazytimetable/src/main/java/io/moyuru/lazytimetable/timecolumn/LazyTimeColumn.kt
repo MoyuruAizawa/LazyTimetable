@@ -13,6 +13,7 @@ import io.moyuru.lazytimetable.LazyTimetableState
 @Composable
 internal fun LazyTimeColumn(
   paddingLeft: Dp,
+  timeColumnWidth: Dp,
   state: LazyTimetableState,
   scope: LazyTimetableScopeImpl,
   modifier: Modifier = Modifier,
@@ -20,6 +21,6 @@ internal fun LazyTimeColumn(
   LazyLayout(
     itemProvider = { LazyTimeColumnItemProvider(scope) },
     modifier = modifier.clipToBounds(),
-    measurePolicy = lazyTimeColumnMeasurementPolicy(paddingLeft, state, scope),
+    measurePolicy = lazyTimeColumnMeasurementPolicy(paddingLeft, timeColumnWidth, state, scope),
   )
 }
