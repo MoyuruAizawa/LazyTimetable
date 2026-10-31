@@ -152,6 +152,7 @@ fun LazyTimetable(
     ) {
       LazyTimeColumn(
         contentPadding.calculateLeftPadding(LayoutDirection.Ltr),
+        timeColumnWidth,
         state,
         scope,
         modifier = Modifier
