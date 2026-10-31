@@ -39,11 +39,9 @@ class LazyTimetableState internal constructor() {
     val oldX = scrollXOffset + scrollXRemainder
     val oldY = scrollYOffset + scrollYRemainder
     val newX = (oldX + deltaX)
-      .coerceAtMost(scrollHorizontalMax.toFloat())
-      .coerceAtLeast(scrollHorizontalMin.toFloat())
+      .coerceIn(minOf(scrollHorizontalMin, scrollHorizontalMax).toFloat(), scrollHorizontalMax.toFloat())
     val newY = (oldY + deltaY)
-      .coerceAtMost(scrollVerticalMax.toFloat())
-      .coerceAtLeast(scrollVerticalMin.toFloat())
+      .coerceIn(minOf(scrollVerticalMin, scrollVerticalMax).toFloat(), scrollVerticalMax.toFloat())
     scrollXOffset = newX.roundToInt()
     scrollYOffset = newY.roundToInt()
     // Keep consumed subpixel movement until it contributes to an integer offset.
