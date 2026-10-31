@@ -9,6 +9,7 @@ import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
+import kotlin.math.roundToInt
 
 @Composable
 fun rememberLazyTimetableState() = rememberSaveable(
@@ -31,18 +32,23 @@ class LazyTimetableState internal constructor() {
   internal val scrollVerticalMax = 0
   internal var scrollHorizontalMin = 0
   internal val scrollHorizontalMax = 0
+  private var scrollXRemainder = 0f
+  private var scrollYRemainder = 0f
 
   internal fun scroll(deltaX: Float, deltaY: Float): Offset {
-    val oldX = scrollXOffset
-    val oldY = scrollYOffset
-    val newX = (scrollXOffset.toFloat() + deltaX)
+    val oldX = scrollXOffset + scrollXRemainder
+    val oldY = scrollYOffset + scrollYRemainder
+    val newX = (oldX + deltaX)
       .coerceAtMost(scrollHorizontalMax.toFloat())
       .coerceAtLeast(scrollHorizontalMin.toFloat())
-    val newY = (scrollYOffset.toFloat() + deltaY.toInt())
+    val newY = (oldY + deltaY)
       .coerceAtMost(scrollVerticalMax.toFloat())
       .coerceAtLeast(scrollVerticalMin.toFloat())
-    scrollXOffset = newX.toInt()
-    scrollYOffset = newY.toInt()
+    scrollXOffset = newX.roundToInt()
+    scrollYOffset = newY.roundToInt()
+    // Keep consumed subpixel movement until it contributes to an integer offset.
+    scrollXRemainder = newX - scrollXOffset
+    scrollYRemainder = newY - scrollYOffset
     return Offset(
       (newX - oldX),
       (newY - oldY),
