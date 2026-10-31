@@ -111,6 +111,11 @@ internal class LazyTimetableScopeImpl(
 
   private val horizontalSpacingPx = horizontalSpacing.roundToPx()
 
+  internal val contentWidth: Int
+    get() = if (columnCount == 0) 0 else (columnWidthPx + horizontalSpacingPx) * columnCount - horizontalSpacingPx
+  internal val contentHeight: Int
+    get() = columns.maxOfOrNull { it.lastOrNull()?.bottom ?: 0 } ?: 0
+
   /**
    * Estimates the position and size of a period.
    */

@@ -17,7 +17,6 @@ android {
 
   testOptions {
     unitTests.isIncludeAndroidResources = true
-    unitTests.all { it.jvmArgs("--add-exports=java.base/jdk.internal.access=ALL-UNNAMED") }
   }
 
   buildTypes {
@@ -30,12 +29,6 @@ android {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
   }
-  testOptions {
-    unitTests.isIncludeAndroidResources = true
-    unitTests.all {
-      it.jvmArgs("--add-exports=java.base/jdk.internal.access=ALL-UNNAMED")
-    }
-  }
   buildFeatures {
     compose = true
   }
@@ -46,12 +39,6 @@ dependencies {
   implementation(libs.androidx.compose.foundation)
   implementation(libs.androidx.ui.tooling.preview)
   debugImplementation(libs.androidx.ui.tooling)
-  debugImplementation(libs.androidx.ui.test.manifest)
-  testImplementation(platform(libs.androidx.compose.bom))
-  testImplementation(libs.androidx.ui.test.junit4)
-  testImplementation(libs.androidx.junit)
-  testImplementation(libs.robolectric)
-
   debugImplementation(libs.androidx.ui.test.manifest)
   testImplementation(platform(libs.androidx.compose.bom))
   testImplementation(libs.androidx.ui.test.junit4)

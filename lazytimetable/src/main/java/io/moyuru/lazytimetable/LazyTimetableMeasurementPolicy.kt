@@ -65,15 +65,15 @@ internal fun lazyTimetableMeasurementPolicy(
 
   state.firstVisibleColumnNumber = visibleItems.firstOrNull()?.columnNumber ?: -1
   state.lastVisibleColumnNumber = visibleItems.lastOrNull()?.columnNumber ?: -1
-  state.scrollHorizontalMin =
-    scope.columns.lastOrNull()?.firstOrNull()?.let {
-      constraints.maxWidth -
-        (it.x + it.width) -
-        contentPadding.calculateRightPadding(LayoutDirection.Ltr).roundToPx()
-    } ?: 0
-  state.scrollVerticalMin = constraints.maxHeight -
-    (scope.columns.maxOfOrNull { it.lastOrNull()?.bottom ?: 0 } ?: 0) -
-    contentPadding.calculateBottomPadding().roundToPx()
+  state.scrollHorizontalMin = minOf(
+    0,
+    constraints.maxWidth - scope.contentWidth -
+      contentPadding.calculateRightPadding(LayoutDirection.Ltr).roundToPx(),
+  )
+  state.scrollVerticalMin = minOf(
+    0,
+    constraints.maxHeight - scope.contentHeight - contentPadding.calculateBottomPadding().roundToPx(),
+  )
 
   layout(constraints.maxWidth, constraints.maxHeight) {
     visibleItems.forEach {
