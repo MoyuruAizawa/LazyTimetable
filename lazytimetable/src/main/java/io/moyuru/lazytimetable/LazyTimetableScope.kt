@@ -106,8 +106,8 @@ internal class LazyTimetableScopeImpl(
 
   private val columnWidthPx = columnWidth.roundToPx()
   private val heightPerMinutePx = heightPerMinute.roundToPx()
-  private val columnHeaderHeightPx = columnHeaderHeight.roundToPx()
-  private val timeColumnWidthPx = timeColumnWidth.roundToPx()
+  internal val columnHeaderHeightPx = columnHeaderHeight.roundToPx()
+  internal val timeColumnWidthPx = timeColumnWidth.roundToPx()
 
   private val horizontalSpacingPx = horizontalSpacing.roundToPx()
 
@@ -172,8 +172,8 @@ internal class LazyTimetableScopeImpl(
 
   internal fun timeLabel(timeLabel: @Composable ((Long) -> Unit)) {
     val allPeriods = columns.flatMap { it }
-    val start = allPeriods.minBy { it.startAtSec }.startAtSec
-    val end = allPeriods.maxBy { it.endAtSec }.endAtSec
+    val start = allPeriods.minOfOrNull { it.startAtSec } ?: return
+    val end = allPeriods.maxOfOrNull { it.endAtSec } ?: return
     generateSequence(start) { previous ->
       val next = previous + 60 * 60
       if (next < end) next else null

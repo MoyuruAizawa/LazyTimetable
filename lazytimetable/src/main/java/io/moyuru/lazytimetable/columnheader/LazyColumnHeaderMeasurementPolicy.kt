@@ -8,6 +8,7 @@ import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.constrainHeight
 import io.moyuru.lazytimetable.LazyTimetableScopeImpl
 import io.moyuru.lazytimetable.LazyTimetableState
 import io.moyuru.lazytimetable.VisibleItem
@@ -51,7 +52,10 @@ internal fun lazyColumnHeaderMeasurementPolicy(
       ),
     )
   }
-  layout(constraints.maxWidth, visibleItems.maxOf { it.placeable.height + it.y }) {
+  val height = constraints.constrainHeight(
+    visibleItems.maxOfOrNull { it.placeable.height + it.y } ?: (paddingTop + scope.columnHeaderHeightPx),
+  )
+  layout(constraints.maxWidth, height) {
     visibleItems.forEach {
       it.placeable.place(it.x, it.y, it.z)
     }

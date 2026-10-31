@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.constrainWidth
 import io.moyuru.lazytimetable.LazyTimetableScopeImpl
 import io.moyuru.lazytimetable.LazyTimetableState
 import io.moyuru.lazytimetable.VisibleItem
@@ -45,7 +46,8 @@ internal fun lazyTimeColumnMeasurementPolicy(
       ),
     )
   }
-  layout(visibleItems.maxOf { it.placeable.width }, constraints.maxHeight) {
+  val width = constraints.constrainWidth(visibleItems.maxOfOrNull { it.placeable.width } ?: scope.timeColumnWidthPx)
+  layout(width, constraints.maxHeight) {
     visibleItems.forEach {
       it.placeable.place(it.x, it.y, it.z)
     }
