@@ -72,7 +72,7 @@ internal fun lazyTimetableMeasurementPolicy(
         contentPadding.calculateRightPadding(LayoutDirection.Ltr).roundToPx()
     } ?: 0
   state.scrollVerticalMin = constraints.maxHeight -
-    scope.columns.maxOf { it.lastOrNull()?.bottom ?: 0 } -
+    (scope.columns.maxOfOrNull { it.lastOrNull()?.bottom ?: 0 } ?: 0) -
     contentPadding.calculateBottomPadding().roundToPx()
 
   layout(constraints.maxWidth, constraints.maxHeight) {
