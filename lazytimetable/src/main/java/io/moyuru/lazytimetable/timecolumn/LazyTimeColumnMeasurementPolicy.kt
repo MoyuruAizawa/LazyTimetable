@@ -2,7 +2,6 @@ package io.moyuru.lazytimetable.timecolumn
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.layout.LazyLayoutMeasureScope
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
@@ -12,7 +11,6 @@ import io.moyuru.lazytimetable.LazyTimetableState
 import io.moyuru.lazytimetable.VisibleItem
 
 @OptIn(ExperimentalFoundationApi::class)
-@Composable
 internal fun lazyTimeColumnMeasurementPolicy(
   paddingLeft: Dp,
   timeColumnWidth: Dp,

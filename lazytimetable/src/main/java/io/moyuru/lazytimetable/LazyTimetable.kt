@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.layout.LazyLayout
+import androidx.compose.foundation.lazy.layout.LazyLayoutMeasurePolicy
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -160,7 +161,9 @@ fun LazyTimetable(
       )
       LazyLayout(
         itemProvider = { LazyTimetableItemProvider(scope) },
-        measurePolicy = lazyTimetableMeasurementPolicy(contentPadding, state, scope),
+        measurePolicy = remember(contentPadding, state, scope) {
+          LazyLayoutMeasurePolicy(lazyTimetableMeasurementPolicy(contentPadding, state, scope))
+        },
         modifier = Modifier
           .weight(1f)
           .clipToBounds()

@@ -2,7 +2,9 @@ package io.moyuru.lazytimetable.timecolumn
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.layout.LazyLayout
+import androidx.compose.foundation.lazy.layout.LazyLayoutMeasurePolicy
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.unit.Dp
@@ -21,6 +23,8 @@ internal fun LazyTimeColumn(
   LazyLayout(
     itemProvider = { LazyTimeColumnItemProvider(scope) },
     modifier = modifier.clipToBounds(),
-    measurePolicy = lazyTimeColumnMeasurementPolicy(paddingLeft, timeColumnWidth, state, scope),
+    measurePolicy = remember(paddingLeft, timeColumnWidth, state, scope) {
+      LazyLayoutMeasurePolicy(lazyTimeColumnMeasurementPolicy(paddingLeft, timeColumnWidth, state, scope))
+    },
   )
 }
