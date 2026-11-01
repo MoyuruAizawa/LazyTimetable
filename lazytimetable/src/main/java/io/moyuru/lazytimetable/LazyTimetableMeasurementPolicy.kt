@@ -33,16 +33,13 @@ internal fun lazyTimetableMeasurementPolicy(
 
   for (columnNumber in previousVisibleColumn until scope.columnCount) {
     val column = scope.columns[columnNumber]
-    for (positionInColumn in 0 until column.size) {
+    val firstPeriod = column.firstOrNull() ?: continue
+    val x = firstPeriod.x + scrollXOffset
+    if (x + firstPeriod.width < 0 || x > constraints.maxWidth) continue
+    for (positionInColumn in firstPeriodIndexReachingViewportTop(column, scrollYOffset) until column.size) {
       val period = column[positionInColumn]
-      val x = period.x + scrollXOffset
       val y = period.y + scrollYOffset
-      when {
-        x + period.width < 0 -> break
-        x > constraints.maxWidth -> break
-        y + period.height < 0 -> continue
-        y > constraints.maxHeight -> break
-      }
+      if (y > constraints.maxHeight) break
       visibleItems.add(
         VisibleItem(
           x,
@@ -80,4 +77,15 @@ internal fun lazyTimetableMeasurementPolicy(
       it.placeable.place(it.x, it.y, it.z)
     }
   }
+}
+
+internal fun firstPeriodIndexReachingViewportTop(column: List<Period>, scrollYOffset: Int): Int {
+  var low = 0
+  var high = column.size
+  while (low < high) {
+    val mid = (low + high) ushr 1
+    val period = column[mid]
+    if (period.y + period.height + scrollYOffset < 0) low = mid + 1 else high = mid
+  }
+  return low
 }
